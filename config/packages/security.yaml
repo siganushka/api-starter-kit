@@ -1,10 +1,14 @@
 security:
+
     encoders:
-        App\Entity\User: { algorithm: auto }
+        App\Entity\User:
+            algorithm: auto
 
     providers:
-        entity_provider:
-            entity: { class: App\Entity\User, property: username }
+        app_user_provider:
+            entity:
+                class: App\Entity\User
+                property: username
 
     firewalls:
         dev:
@@ -12,7 +16,7 @@ security:
             security: false
 
         # refresh_token:
-        #     pattern: ^/auth/refresh_token
+        #     pattern: ^/refresh_token
         #     stateless: true
         #     anonymous: lazy
         #     guard:
@@ -20,11 +24,11 @@ security:
         #             - App\Security\JWTRefreshTokenAuthenticator
 
         token:
-            pattern: ^/auth/token
+            pattern: ^/token
             stateless: true
             anonymous: lazy
             json_login:
-                check_path: /auth/token
+                check_path: /token
                 success_handler: lexik_jwt_authentication.handler.authentication_success
                 failure_handler: lexik_jwt_authentication.handler.authentication_failure
 
@@ -37,5 +41,5 @@ security:
                     - lexik_jwt_authentication.jwt_token_authenticator
 
     access_control:
-        - { path: ^/auth/token, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/,           roles: IS_AUTHENTICATED_FULLY }
+        - { path: ^/token,  roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/,       roles: IS_AUTHENTICATED_FULLY }

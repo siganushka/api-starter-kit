@@ -19,8 +19,7 @@ class UserFixture extends Fixture
     public function load(ObjectManager $manager)
     {
         $user = new User();
-        $user->setUsername('acme_foo');
-        $user->setNickname('AcmeFoo');
+        $user->setUsername('siganushka');
         $user->setAvatar('http://placehold.it/320x320');
         $user->setCreatedAt(new \DateTimeImmutable());
 

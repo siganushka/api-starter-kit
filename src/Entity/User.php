@@ -18,22 +18,22 @@ class User implements UserInterface
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=255, unique=true)
+     * @ORM\Column(type="json")
+     */
+    private $roles = [];
+
+    /**
+     * @ORM\Column(type="string", length=180, unique=true)
      */
     private $username;
 
     /**
-     * @ORM\Column(type="string", length=255)
-     */
-    private $nickname;
-
-    /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string")
      */
     private $password;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string")
      */
     private $avatar;
 
@@ -52,9 +52,24 @@ class User implements UserInterface
         return $this->id;
     }
 
-    public function getUsername(): ?string
+    public function getRoles(): array
     {
-        return $this->username;
+        $roles = $this->roles;
+        $roles[] = 'ROLE_USER';
+
+        return array_unique($roles);
+    }
+
+    public function setRoles(array $roles): self
+    {
+        $this->roles = $roles;
+
+        return $this;
+    }
+
+    public function getUsername(): string
+    {
+        return (string) $this->username;
     }
 
     public function setUsername(string $username): self
@@ -64,21 +79,9 @@ class User implements UserInterface
         return $this;
     }
 
-    public function getNickname(): ?string
+    public function getPassword(): string
     {
-        return $this->nickname;
-    }
-
-    public function setNickname(string $nickname): self
-    {
-        $this->nickname = $nickname;
-
-        return $this;
-    }
-
-    public function getPassword(): ?string
-    {
-        return $this->password;
+        return (string) $this->password;
     }
 
     public function setPassword(string $password): self
@@ -124,18 +127,14 @@ class User implements UserInterface
         return $this;
     }
 
-    public function getRoles()
-    {
-        return ['ROLE_USER'];
-    }
-
     public function getSalt()
     {
-        return;
+        // not needed when using the "bcrypt" algorithm in security.yaml
     }
 
     public function eraseCredentials()
     {
-        return;
+        // If you store any temporary, sensitive data on the user, clear it here
+        // $this->plainPassword = null;
     }
 }
