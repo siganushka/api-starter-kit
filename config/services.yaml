@@ -27,5 +27,13 @@ services:
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
 
+    app.zone_request_matcher:
+        class: Symfony\Component\HttpFoundation\RequestMatcher
+        arguments: { $path: / }
+
+    App\EventListener\ZoneMatcherListener:
+        calls:
+            - ['addRequestMatcher', ['@app.zone_request_matcher']]
+
     App\EventListener\JWTTokenListener:
         $expiresIn: '%token_ttl%'
