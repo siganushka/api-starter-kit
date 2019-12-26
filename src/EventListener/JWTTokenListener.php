@@ -20,6 +20,7 @@ class JWTTokenListener implements EventSubscriberInterface
         $data = $event->getData();
 
         $data['access_token'] = $data['token'];
+        $data['refresh_token'] = $data['token'];
         $data['expires_in'] = $this->expiresIn;
 
         // remove origin key

@@ -16,3 +16,9 @@
 /node_modules
 /public/apidoc
 ###< app ###
+
+###> symfony/phpunit-bridge ###
+.phpunit
+.phpunit.result.cache
+/phpunit.xml
+###< symfony/phpunit-bridge ###
