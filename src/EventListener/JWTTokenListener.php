@@ -2,25 +2,34 @@
 
 namespace App\EventListener;
 
+use App\JWT\RefreshTokenManager;
 use Lexik\Bundle\JWTAuthenticationBundle\Events;
 use Lexik\Bundle\JWTAuthenticationBundle\Event\AuthenticationSuccessEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class JWTTokenListener implements EventSubscriberInterface
 {
+    private $refreshTokenManager;
     private $expiresIn;
 
-    public function __construct(int $expiresIn)
+    public function __construct(RefreshTokenManager $refreshTokenManager, int $expiresIn)
     {
+        $this->refreshTokenManager = $refreshTokenManager;
         $this->expiresIn = $expiresIn;
     }
 
     public function onAuthenticationSuccess(AuthenticationSuccessEvent $event)
     {
-        $data = $event->getData();
+        try {
+            $token = $this->refreshTokenManager->update($event->getUser());
+        } catch (\Throwable $th) {
+            // do stuff...
+            throw $th;
+        }
 
+        $data = $event->getData();
         $data['access_token'] = $data['token'];
-        $data['refresh_token'] = $data['token'];
+        $data['refresh_token'] = $token->getRefreshToken();
         $data['expires_in'] = $this->expiresIn;
 
         // remove origin key

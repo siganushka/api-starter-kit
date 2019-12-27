@@ -37,3 +37,6 @@ services:
 
     App\EventListener\JWTTokenListener:
         $expiresIn: '%token_ttl%'
+
+    App\JWT\RefreshTokenManager:
+        $userProvider: security.providers.app_user_token_provider

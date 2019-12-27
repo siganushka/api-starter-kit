@@ -2,7 +2,7 @@
 
 namespace App\Security\Authenticator;
 
-use App\JWT\RefreshTokenGenerator;
+use App\JWT\RefreshTokenManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
 use Lexik\Bundle\JWTAuthenticationBundle\TokenExtractor\TokenExtractorInterface;
@@ -22,23 +22,21 @@ class RefreshTokenAuthenticator extends AbstractGuardAuthenticator
     private $httpUtils;
     private $userChecker;
     private $tokenExtractor;
-    private $refreshTokenGenerator;
-    private $entityManager;
+    private $refreshTokenManager;
+    private $jwtTokenManager;
 
     public function __construct(
         HttpUtils $httpUtils,
         UserCheckerInterface $userChecker,
         TokenExtractorInterface $tokenExtractor,
-        RefreshTokenGenerator $refreshTokenGenerator,
-        JWTTokenManagerInterface $jwtTokenManager,
-        EntityManagerInterface $entityManager)
+        RefreshTokenManager $refreshTokenManager,
+        JWTTokenManagerInterface $jwtTokenManager)
     {
         $this->httpUtils = $httpUtils;
         $this->userChecker = $userChecker;
         $this->tokenExtractor = $tokenExtractor;
-        $this->refreshTokenGenerator = $refreshTokenGenerator;
+        $this->refreshTokenManager = $refreshTokenManager;
         $this->jwtTokenManager = $jwtTokenManager;
-        $this->entityManager = $entityManager;
     }
 
     public function supports(Request $request)
@@ -82,21 +80,14 @@ class RefreshTokenAuthenticator extends AbstractGuardAuthenticator
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey)
     {
-        $updatedAt = new \DateTimeImmutable();
-        $expireAt = $updatedAt->modify('+1 days');
+        $user = $token->getUser()->getUser();
 
-        $user = $token->getUser();
-        $user->setRefreshToken($this->refreshTokenGenerator->generate($user));
-        $user->setUpdatedAt($updatedAt);
-        $user->setExpireAt($expireAt);
-
-        $this->entityManager->flush();
-
+        $token = $this->refreshTokenManager->update($user);
         $jwtAsString = $this->jwtTokenManager->create($user);
 
         $data = [
             'access_token' => $jwtAsString,
-            'refresh_token' => $jwtAsString,
+            'refresh_token' => $token->getRefreshToken(),
             'expires_in' => 3600,
         ];
 
