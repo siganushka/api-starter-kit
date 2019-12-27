@@ -25,29 +25,30 @@ security:
             stateless: true
             anonymous: lazy
             provider: app_user_token_provider
-            guard:
-                authenticators:
-                    - App\Security\Authenticator\RefreshTokenAuthenticator
+            # guard:
+            #     authenticators:
+            #         - App\Security\Authenticator\RefreshTokenAuthenticator
 
         token:
             pattern: ^/token
             stateless: true
             anonymous: lazy
             provider: app_user_provider
-            json_login:
-                check_path: /token
-                success_handler: lexik_jwt_authentication.handler.authentication_success
-                failure_handler: lexik_jwt_authentication.handler.authentication_failure
+            # json_login:
+            #     check_path: /token
+            #     success_handler: lexik_jwt_authentication.handler.authentication_success
+            #     failure_handler: lexik_jwt_authentication.handler.authentication_failure
 
         main:
             pattern: ^/
             stateless: true
             anonymous: lazy
             provider: app_user_provider
-            guard:
-                authenticators:
-                    - lexik_jwt_authentication.jwt_token_authenticator
+            # guard:
+            #     authenticators:
+            #         - lexik_jwt_authentication.jwt_token_authenticator
 
     access_control:
-        - { path: ^/token,  roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/,       roles: IS_AUTHENTICATED_FULLY }
+        # # - { path: ^/api(?!/doc$),   roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        # - { path: ^/token,          roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        # - { path: ^/,               roles: IS_AUTHENTICATED_FULLY }
