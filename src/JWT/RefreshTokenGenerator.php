@@ -4,7 +4,7 @@ namespace App\JWT;
 
 use Symfony\Component\Security\Core\User\UserInterface;
 
-class RefreshTokenGenerator
+class RefreshTokenGenerator implements RefreshTokenGeneratorInterface
 {
     public function generate(UserInterface $user): string
     {

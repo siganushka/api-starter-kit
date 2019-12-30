@@ -6,7 +6,7 @@ use App\Entity\UserToken;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
-class RefreshTokenManager
+class RefreshTokenManager implements RefreshTokenManagerInterface
 {
     private $entityManager;
     private $refreshTokenGenerator;
@@ -18,9 +18,7 @@ class RefreshTokenManager
     }
 
     /**
-     * 更新刷新令牌
-     *
-     * @param UserInterface $user
+     * 更新刷新令牌.
      *
      * @return void
      */
@@ -40,14 +38,11 @@ class RefreshTokenManager
     }
 
     /**
-     * 销毁刷新令牌
-     *
-     * @param UserInterface $user
+     * 销毁刷新令牌.
      *
      * @return void
      */
     public function destroy(UserInterface $user)
     {
-
     }
 }

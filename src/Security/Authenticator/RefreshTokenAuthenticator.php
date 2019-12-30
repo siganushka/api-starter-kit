@@ -3,7 +3,6 @@
 namespace App\Security\Authenticator;
 
 use App\JWT\RefreshTokenManager;
-use Doctrine\ORM\EntityManagerInterface;
 use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
 use Lexik\Bundle\JWTAuthenticationBundle\TokenExtractor\TokenExtractorInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -15,24 +14,20 @@ use Symfony\Component\Security\Core\User\UserCheckerInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 use Symfony\Component\Security\Guard\AbstractGuardAuthenticator;
-use Symfony\Component\Security\Http\HttpUtils;
 
 class RefreshTokenAuthenticator extends AbstractGuardAuthenticator
 {
-    private $httpUtils;
     private $userChecker;
     private $tokenExtractor;
     private $refreshTokenManager;
     private $jwtTokenManager;
 
     public function __construct(
-        HttpUtils $httpUtils,
         UserCheckerInterface $userChecker,
         TokenExtractorInterface $tokenExtractor,
         RefreshTokenManager $refreshTokenManager,
         JWTTokenManagerInterface $jwtTokenManager)
     {
-        $this->httpUtils = $httpUtils;
         $this->userChecker = $userChecker;
         $this->tokenExtractor = $tokenExtractor;
         $this->refreshTokenManager = $refreshTokenManager;
@@ -41,8 +36,7 @@ class RefreshTokenAuthenticator extends AbstractGuardAuthenticator
 
     public function supports(Request $request)
     {
-        return $this->httpUtils->checkRequestPath($request, 'api_refresh_token')
-            && $this->tokenExtractor->extract($request);
+        return $this->tokenExtractor->extract($request);
     }
 
     public function getCredentials(Request $request)

@@ -5,13 +5,6 @@ namespace App\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 
-/**
- * @apiDefine TokenModel
- *
- * @apiSuccess (200) {String} access_token 访问令牌，需要客户端保存
- * @apiSuccess (200) {String} refresh_token 刷新令牌，需要客户端保存，有效期固定 30 天
- * @apiSuccess (200) {String} expires_in 访问令牌有效期，过期后需要客户端主动刷新
- */
 class TokenController extends AbstractController
 {
     /**
@@ -25,7 +18,9 @@ class TokenController extends AbstractController
      * @apiParam (Body) {String} username 用户登录名
      * @apiParam (Body) {String} password 用户登录密码
      *
-     * @apiUse TokenModel
+     * @apiSuccess (200) {String} access_token 访问令牌，需要客户端保存
+     * @apiSuccess (200) {String} refresh_token 刷新令牌，需要客户端保存，有效期固定 30 天
+     * @apiSuccess (200) {String} expires_in 访问令牌有效期，过期后需要客户端主动刷新
      */
     public function token()
     {
@@ -42,7 +37,9 @@ class TokenController extends AbstractController
      *
      * @apiHeader {String} Authorization 刷新令牌，使用 <code>Bearer :refresh_token</code> 格式
      *
-     * @apiUse TokenModel
+     * @apiSuccess (200) {String} access_token 新的访问令牌，在客户商替换旧的令牌
+     * @apiSuccess (200) {String} refresh_token 新的刷新令牌，在客户商替换旧的刷新令牌
+     * @apiSuccess (200) {String} expires_in 新的访问令牌有效期
      */
     public function refreshToken()
     {

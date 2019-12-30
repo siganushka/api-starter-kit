@@ -114,21 +114,17 @@ class UserToken implements UserInterface
 
     public function getPassword()
     {
-
     }
 
     public function getSalt()
     {
-
     }
 
     public function getUsername()
     {
-
     }
 
     public function eraseCredentials()
     {
-
     }
 }

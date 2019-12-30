@@ -3,11 +3,11 @@
 namespace App\EventListener;
 
 use App\JWT\RefreshTokenManager;
-use Lexik\Bundle\JWTAuthenticationBundle\Events;
 use Lexik\Bundle\JWTAuthenticationBundle\Event\AuthenticationSuccessEvent;
+use Lexik\Bundle\JWTAuthenticationBundle\Events;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
-class JWTTokenListener implements EventSubscriberInterface
+class RefreshTokenListener implements EventSubscriberInterface
 {
     private $refreshTokenManager;
     private $expiresIn;

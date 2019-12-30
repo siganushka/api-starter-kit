@@ -3,8 +3,8 @@
 namespace App\DependencyInjection\Compiler;
 
 use Doctrine\Common\Annotations\AnnotationReader;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 class ApiDocAnnotationPass implements CompilerPassInterface
 {

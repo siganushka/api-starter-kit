@@ -5,21 +5,21 @@ namespace App\JWT;
 class Token
 {
     /**
-     * 用户访问令牌
+     * 用户访问令牌.
      *
      * @var string
      */
     private $accessToken;
 
     /**
-     * 刷新令牌，用于重新获取访问令牌
+     * 刷新令牌，用于重新获取访问令牌.
      *
      * @var string
      */
     private $refreshToken;
 
     /**
-     * 令牌有效期，单位为秒
+     * 令牌有效期，单位为秒.
      *
      * @var int
      */
