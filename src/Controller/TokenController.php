@@ -2,8 +2,10 @@
 
 namespace App\Controller;
 
+use App\JWT\JWTManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 class TokenController extends AbstractController
 {
@@ -44,5 +46,31 @@ class TokenController extends AbstractController
     public function refreshToken()
     {
         // controller can be blank: it will never be executed!
+    }
+
+    /**
+     * @Route("/private_area", methods={"GET"})
+     *
+     * @return void
+     */
+    public function private_area(JWTManager $jwtManager, UserInterface $user)
+    {
+        dd($user);
+    }
+
+    /**
+     * @Route("/public_area", methods={"GET"})
+     *
+     * @return void
+     */
+    public function public_area(JWTManager $jwtManager)
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        $user = $em->find('App\Entity\User', 1);
+
+        dd($jwtManager->encode($user));
+
+        // dd($jwtManager->decode('eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE1Nzc3MDEyNjAsImV4cCI6MTU3NzcwNDg2MCwicm9sZXMiOlsiUk9MRV9VU0VSIl0sInVzZXJuYW1lIjoic2lnYW51c2hrYSJ9.F5B_JRYyhNofMYCRqw3AeGF_WLwetS4PLYUBUaPm5wc'));
     }
 }

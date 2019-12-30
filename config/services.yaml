@@ -35,8 +35,13 @@ services:
         calls:
             - ['addRequestMatcher', ['@app.zone_request_matcher']]
 
-    App\EventListener\JWTTokenListener:
+    App\EventListener\RefreshTokenListener:
         $expiresIn: '%token_ttl%'
+
+    App\JWT\JWTManager:
+        $publicKey: file://%kernel.project_dir%/config/jwt/public.pem
+        $privateKey: file://%kernel.project_dir%/config/jwt/private.pem
+        $passphrase: '%env(resolve:APP_SECRET)%'
 
     App\JWT\RefreshTokenManager:
         $userProvider: security.providers.app_user_token_provider

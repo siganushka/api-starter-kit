@@ -49,7 +49,7 @@ class RefreshTokenAuthenticator extends AbstractGuardAuthenticator
         try {
             $user = $userProvider->loadUserByUsername($credentials);
         } catch (\Throwable $th) {
-            throw new CustomUserMessageAuthenticationException(sprintf('Invalid refresh token "%s"', $credentials));
+            throw new CustomUserMessageAuthenticationException("Invalid refresh token: {$credentials}");
         }
 
         $this->userChecker->checkPreAuth($user);
