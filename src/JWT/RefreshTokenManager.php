@@ -6,7 +6,7 @@ use App\Entity\UserToken;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
-class RefreshTokenManager implements RefreshTokenManagerInterface
+class RefreshTokenManager
 {
     private $entityManager;
     private $refreshTokenGenerator;

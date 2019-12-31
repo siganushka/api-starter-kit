@@ -2,7 +2,7 @@
 
 namespace App\Security\Authenticator;
 
-use App\JWT\JWTTokenManager;
+use App\JWT\JWTManager;
 use App\JWT\RefreshTokenManager;
 use App\JWT\Token;
 use App\TokenExtractor\TokenExtractorInterface;
@@ -22,7 +22,7 @@ class RefreshTokenAuthenticator extends AbstractGuardAuthenticator
 {
     private $userChecker;
     private $refreshTokenManager;
-    private $jwtTokenManager;
+    private $JWTManager;
     private $tokenExtractor;
     private $viewHandler;
     private $ttl;
@@ -30,14 +30,14 @@ class RefreshTokenAuthenticator extends AbstractGuardAuthenticator
     public function __construct(
         UserCheckerInterface $userChecker,
         RefreshTokenManager $refreshTokenManager,
-        JWTTokenManager $jwtTokenManager,
+        JWTManager $JWTManager,
         TokenExtractorInterface $tokenExtractor,
         ViewHandlerInterface $viewHandler,
         int $ttl)
     {
         $this->userChecker = $userChecker;
         $this->refreshTokenManager = $refreshTokenManager;
-        $this->jwtTokenManager = $jwtTokenManager;
+        $this->JWTManager = $JWTManager;
         $this->tokenExtractor = $tokenExtractor;
         $this->viewHandler = $viewHandler;
         $this->ttl = $ttl;
@@ -87,7 +87,7 @@ class RefreshTokenAuthenticator extends AbstractGuardAuthenticator
         $user = $token->getUser()->getUser();
 
         $new = $this->refreshTokenManager->update($user);
-        $jwt = (string) $this->jwtTokenManager->encode($user);
+        $jwt = (string) $this->JWTManager->encode($user);
 
         $token = new Token($jwt, Token::TYPE_BEARER, $this->ttl, $new->getRefreshToken());
         $view = View::create($token);

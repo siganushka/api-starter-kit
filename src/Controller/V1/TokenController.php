@@ -2,7 +2,7 @@
 
 namespace App\Controller\V1;
 
-use App\JWT\JWTTokenManager;
+use App\JWT\JWTManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -67,14 +67,14 @@ class TokenController extends AbstractController
      *
      * @return void
      */
-    public function public_area(JWTTokenManager $jwtTokenManager)
+    public function public_area(JWTManager $JWTManager)
     {
         $em = $this->getDoctrine()->getManager();
 
         $user = $em->find('App\Entity\User', 1);
 
-        dd($jwtTokenManager->encode($user));
+        dd($JWTManager->encode($user));
 
-        // dd($jwtTokenManager->decode('eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE1Nzc3MDEyNjAsImV4cCI6MTU3NzcwNDg2MCwicm9sZXMiOlsiUk9MRV9VU0VSIl0sInVzZXJuYW1lIjoic2lnYW51c2hrYSJ9.F5B_JRYyhNofMYCRqw3AeGF_WLwetS4PLYUBUaPm5wc'));
+        // dd($JWTManager->decode('eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE1Nzc3MDEyNjAsImV4cCI6MTU3NzcwNDg2MCwicm9sZXMiOlsiUk9MRV9VU0VSIl0sInVzZXJuYW1lIjoic2lnYW51c2hrYSJ9.F5B_JRYyhNofMYCRqw3AeGF_WLwetS4PLYUBUaPm5wc'));
     }
 }

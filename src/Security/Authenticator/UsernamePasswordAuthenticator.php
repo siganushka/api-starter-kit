@@ -2,7 +2,7 @@
 
 namespace App\Security\Authenticator;
 
-use App\JWT\JWTTokenManager;
+use App\JWT\JWTManager;
 use App\JWT\RefreshTokenManager;
 use App\JWT\Token;
 use FOS\RestBundle\View\View;
@@ -25,7 +25,7 @@ class UsernamePasswordAuthenticator extends AbstractGuardAuthenticator
     private $httpUtils;
     private $passwordEncoder;
     private $viewHandler;
-    private $jwtTokenManager;
+    private $JWTManager;
     private $refreshTokenManager;
     private $options;
     private $ttl;
@@ -34,7 +34,7 @@ class UsernamePasswordAuthenticator extends AbstractGuardAuthenticator
         HttpUtils $httpUtils,
         UserPasswordEncoderInterface $passwordEncoder,
         ViewHandlerInterface $viewHandler,
-        JWTTokenManager $jwtTokenManager,
+        JWTManager $JWTManager,
         RefreshTokenManager $refreshTokenManager,
         array $options = [],
         int $ttl)
@@ -42,7 +42,7 @@ class UsernamePasswordAuthenticator extends AbstractGuardAuthenticator
         $this->httpUtils = $httpUtils;
         $this->passwordEncoder = $passwordEncoder;
         $this->viewHandler = $viewHandler;
-        $this->jwtTokenManager = $jwtTokenManager;
+        $this->JWTManager = $JWTManager;
         $this->refreshTokenManager = $refreshTokenManager;
         $this->options = array_merge([
             'username_path' => 'username',
@@ -114,7 +114,7 @@ class UsernamePasswordAuthenticator extends AbstractGuardAuthenticator
             throw $th;
         }
 
-        $jwt = (string) $this->jwtTokenManager->encode($token->getUser());
+        $jwt = (string) $this->JWTManager->encode($token->getUser());
 
         $token = new Token($jwt, Token::TYPE_BEARER, $this->ttl, $new->getRefreshToken());
         $view = View::create($token);
