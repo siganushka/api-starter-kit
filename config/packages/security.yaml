@@ -21,7 +21,7 @@ security:
             security: false
 
         refresh_token:
-            pattern: ^/refresh_token
+            pattern: ^/v1/refresh_token
             stateless: true
             anonymous: lazy
             provider: app_user_token_provider
@@ -30,7 +30,7 @@ security:
                     - App\Security\Authenticator\RefreshTokenAuthenticator
 
         token:
-            pattern: ^/token
+            pattern: ^/v1/token
             stateless: true
             anonymous: lazy
             provider: app_user_provider
@@ -39,7 +39,7 @@ security:
                     - App\Security\Authenticator\UsernamePasswordAuthenticator
 
         main:
-            pattern: ^/
+            pattern: ^/v1
             stateless: true
             anonymous: lazy
             provider: app_user_provider
@@ -48,6 +48,6 @@ security:
                     - App\Security\Authenticator\TokenAuthenticator
 
     access_control:
-        - { path: ^/public_area,    roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/token,          roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/,               roles: IS_AUTHENTICATED_FULLY }
+        - { path: ^/v1/public_area, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/v1/token,       roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/v1,             roles: IS_AUTHENTICATED_FULLY }

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller;
+namespace App\Controller\V1;
 
 use App\JWT\JWTTokenManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -43,7 +43,7 @@ class TokenController extends AbstractController
      * @apiGroup Token
      * @apiVersion 0.1.0
      *
-     * @apiHeader {String} Authorization 刷新令牌，使用 <code>Bearer :refresh_token</code> 格式
+     * @apiHeader {String} Authorization 刷新令牌，使用 <code>Bearer {refresh_token}</code> 格式
      *
      * @apiUse TokenModel
      */
@@ -53,7 +53,7 @@ class TokenController extends AbstractController
     }
 
     /**
-     * @Route("/private_area", methods={"GET"})
+     * @Route("/private_area", name="api_private_area", methods={"GET"})
      *
      * @return void
      */
@@ -63,7 +63,7 @@ class TokenController extends AbstractController
     }
 
     /**
-     * @Route("/public_area", methods={"GET"})
+     * @Route("/public_area", name="api_public_area", methods={"GET"})
      *
      * @return void
      */

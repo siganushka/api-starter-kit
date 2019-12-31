@@ -47,7 +47,7 @@ class UsernamePasswordAuthenticator extends AbstractGuardAuthenticator
         $this->options = array_merge([
             'username_path' => 'username',
             'password_path' => 'password',
-            'check_path' => '/token',
+            'check_path' => '/v1/token',
         ], $options);
         $this->ttl = $ttl;
     }
