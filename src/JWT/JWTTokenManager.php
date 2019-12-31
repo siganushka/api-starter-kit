@@ -9,7 +9,7 @@ use Lcobucci\JWT\Signer\Key;
 use Lcobucci\JWT\Token;
 use Symfony\Component\Security\Core\User\UserInterface;
 
-class JWTManager
+class JWTTokenManager
 {
     private $publicKey;
     private $privateKey;

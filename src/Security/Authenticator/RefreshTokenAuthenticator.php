@@ -2,11 +2,14 @@
 
 namespace App\Security\Authenticator;
 
+use App\JWT\JWTTokenManager;
 use App\JWT\RefreshTokenManager;
-use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
-use Lexik\Bundle\JWTAuthenticationBundle\TokenExtractor\TokenExtractorInterface;
-use Symfony\Component\HttpFoundation\JsonResponse;
+use App\JWT\Token;
+use App\TokenExtractor\TokenExtractorInterface;
+use FOS\RestBundle\View\View;
+use FOS\RestBundle\View\ViewHandlerInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\Exception\CustomUserMessageAuthenticationException;
@@ -18,25 +21,31 @@ use Symfony\Component\Security\Guard\AbstractGuardAuthenticator;
 class RefreshTokenAuthenticator extends AbstractGuardAuthenticator
 {
     private $userChecker;
-    private $tokenExtractor;
     private $refreshTokenManager;
     private $jwtTokenManager;
+    private $tokenExtractor;
+    private $viewHandler;
+    private $ttl;
 
     public function __construct(
         UserCheckerInterface $userChecker,
-        TokenExtractorInterface $tokenExtractor,
         RefreshTokenManager $refreshTokenManager,
-        JWTTokenManagerInterface $jwtTokenManager)
+        JWTTokenManager $jwtTokenManager,
+        TokenExtractorInterface $tokenExtractor,
+        ViewHandlerInterface $viewHandler,
+        int $ttl)
     {
         $this->userChecker = $userChecker;
-        $this->tokenExtractor = $tokenExtractor;
         $this->refreshTokenManager = $refreshTokenManager;
         $this->jwtTokenManager = $jwtTokenManager;
+        $this->tokenExtractor = $tokenExtractor;
+        $this->viewHandler = $viewHandler;
+        $this->ttl = $ttl;
     }
 
     public function supports(Request $request)
     {
-        return $this->tokenExtractor->extract($request);
+        return null !== $this->tokenExtractor->extract($request);
     }
 
     public function getCredentials(Request $request)
@@ -65,36 +74,35 @@ class RefreshTokenAuthenticator extends AbstractGuardAuthenticator
 
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception)
     {
-        $data = [
-            'message' => $exception->getMessage(),
-        ];
+        $view = View::create([
+            'code' => Response::HTTP_UNAUTHORIZED,
+            'message' => strtr($exception->getMessageKey(), $exception->getMessageData()),
+        ]);
 
-        return new JsonResponse($data, JsonResponse::HTTP_UNAUTHORIZED);
+        return $this->viewHandler->handle($view);
     }
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey)
     {
         $user = $token->getUser()->getUser();
 
-        $token = $this->refreshTokenManager->update($user);
-        $jwtAsString = $this->jwtTokenManager->create($user);
+        $new = $this->refreshTokenManager->update($user);
+        $jwt = (string) $this->jwtTokenManager->encode($user);
 
-        $data = [
-            'access_token' => $jwtAsString,
-            'refresh_token' => $token->getRefreshToken(),
-            'expires_in' => 3600,
-        ];
+        $token = new Token($jwt, Token::TYPE_BEARER, $this->ttl, $new->getRefreshToken());
+        $view = View::create($token);
 
-        return new JsonResponse($data);
+        return $this->viewHandler->handle($view);
     }
 
     public function start(Request $request, AuthenticationException $authException = null)
     {
-        $data = [
-            'message' => 'Authentication Required',
-        ];
+        $view = View::create([
+            'code' => Response::HTTP_UNAUTHORIZED,
+            'message' => 'Refresh Token not found.',
+        ]);
 
-        return new JsonResponse($data, JsonResponse::HTTP_UNAUTHORIZED);
+        return $this->viewHandler->handle($view);
     }
 
     public function supportsRememberMe()

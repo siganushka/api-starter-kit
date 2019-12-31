@@ -27,21 +27,22 @@ services:
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
 
-    app.zone_request_matcher:
-        class: Symfony\Component\HttpFoundation\RequestMatcher
-        arguments: { $path: / }
-
-    App\EventListener\ZoneMatcherListener:
+    App\TokenExtractor\ChainExtractor:
         calls:
-            - ['addRequestMatcher', ['@app.zone_request_matcher']]
+            - ['addExtractor', ['@App\TokenExtractor\AuthorizationHeaderExtractor']]
+            - ['addExtractor', ['@App\TokenExtractor\QueryParameterExtractor']]
 
-    App\EventListener\RefreshTokenListener:
-        $expiresIn: '%token_ttl%'
-
-    App\JWT\JWTManager:
+    App\JWT\JWTTokenManager:
         $publicKey: file://%kernel.project_dir%/config/jwt/public.pem
         $privateKey: file://%kernel.project_dir%/config/jwt/private.pem
         $passphrase: '%env(resolve:APP_SECRET)%'
 
     App\JWT\RefreshTokenManager:
         $userProvider: security.providers.app_user_token_provider
+
+    App\Security\Authenticator\UsernamePasswordAuthenticator:
+        $ttl: '%token_ttl%'
+
+    App\Security\Authenticator\RefreshTokenAuthenticator:
+        $tokenExtractor: '@App\TokenExtractor\ChainExtractor'
+        $ttl: '%token_ttl%'

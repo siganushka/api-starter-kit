@@ -2,11 +2,19 @@
 
 namespace App\Controller;
 
-use App\JWT\JWTManager;
+use App\JWT\JWTTokenManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\User\UserInterface;
 
+/**
+ * @apiDefine TokenModel
+ *
+ * @apiSuccess (Success 200) {String} access_token 访问令牌，需要客户端保存
+ * @apiSuccess (Success 200) {String} token_type 令牌类型，暂时仅支持 <code>Bearer</code>
+ * @apiSuccess (Success 200) {String} expires_in 访问令牌有效期，过期后需要客户端主动刷新
+ * @apiSuccess (Success 200) {String} refresh_token 刷新令牌，需要客户端保存，有效期固定 30 天
+ */
 class TokenController extends AbstractController
 {
     /**
@@ -20,9 +28,7 @@ class TokenController extends AbstractController
      * @apiParam (Body) {String} username 用户登录名
      * @apiParam (Body) {String} password 用户登录密码
      *
-     * @apiSuccess (200) {String} access_token 访问令牌，需要客户端保存
-     * @apiSuccess (200) {String} refresh_token 刷新令牌，需要客户端保存，有效期固定 30 天
-     * @apiSuccess (200) {String} expires_in 访问令牌有效期，过期后需要客户端主动刷新
+     * @apiUse TokenModel
      */
     public function token()
     {
@@ -39,9 +45,7 @@ class TokenController extends AbstractController
      *
      * @apiHeader {String} Authorization 刷新令牌，使用 <code>Bearer :refresh_token</code> 格式
      *
-     * @apiSuccess (200) {String} access_token 新的访问令牌，在客户商替换旧的令牌
-     * @apiSuccess (200) {String} refresh_token 新的刷新令牌，在客户商替换旧的刷新令牌
-     * @apiSuccess (200) {String} expires_in 新的访问令牌有效期
+     * @apiUse TokenModel
      */
     public function refreshToken()
     {
@@ -53,7 +57,7 @@ class TokenController extends AbstractController
      *
      * @return void
      */
-    public function private_area(JWTManager $jwtManager, UserInterface $user)
+    public function private_area(UserInterface $user)
     {
         dd($user);
     }
@@ -63,14 +67,14 @@ class TokenController extends AbstractController
      *
      * @return void
      */
-    public function public_area(JWTManager $jwtManager)
+    public function public_area(JWTTokenManager $jwtTokenManager)
     {
         $em = $this->getDoctrine()->getManager();
 
         $user = $em->find('App\Entity\User', 1);
 
-        dd($jwtManager->encode($user));
+        dd($jwtTokenManager->encode($user));
 
-        // dd($jwtManager->decode('eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE1Nzc3MDEyNjAsImV4cCI6MTU3NzcwNDg2MCwicm9sZXMiOlsiUk9MRV9VU0VSIl0sInVzZXJuYW1lIjoic2lnYW51c2hrYSJ9.F5B_JRYyhNofMYCRqw3AeGF_WLwetS4PLYUBUaPm5wc'));
+        // dd($jwtTokenManager->decode('eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE1Nzc3MDEyNjAsImV4cCI6MTU3NzcwNDg2MCwicm9sZXMiOlsiUk9MRV9VU0VSIl0sInVzZXJuYW1lIjoic2lnYW51c2hrYSJ9.F5B_JRYyhNofMYCRqw3AeGF_WLwetS4PLYUBUaPm5wc'));
     }
 }

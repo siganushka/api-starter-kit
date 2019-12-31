@@ -28,9 +28,15 @@ class RefreshTokenManager implements RefreshTokenManagerInterface
         $expireAt = $updatedAt->modify('+15 days');
 
         $token = $user->getToken();
+        if (!$token instanceof UserToken) {
+            $token = new UserToken();
+            $token->setCreatedAt(new \DateTimeImmutable());
+        }
+
         $token->setRefreshToken($this->refreshTokenGenerator->generate($user));
-        $token->setUpdatedAt($updatedAt);
         $token->setExpireAt($expireAt);
+        $token->setUpdatedAt($updatedAt);
+        $user->setToken($token);
 
         $this->entityManager->flush();
 

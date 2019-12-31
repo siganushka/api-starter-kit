@@ -9,7 +9,7 @@ security:
             entity:
                 class: App\Entity\User
                 property: username
-        
+
         app_user_token_provider:
             entity:
                 class: App\Entity\UserToken
@@ -34,10 +34,9 @@ security:
             stateless: true
             anonymous: lazy
             provider: app_user_provider
-            json_login:
-                check_path: /token
-                success_handler: lexik_jwt_authentication.handler.authentication_success
-                failure_handler: lexik_jwt_authentication.handler.authentication_failure
+            guard:
+                authenticators:
+                    - App\Security\Authenticator\UsernamePasswordAuthenticator
 
         main:
             pattern: ^/
@@ -46,9 +45,9 @@ security:
             provider: app_user_provider
             guard:
                 authenticators:
-                    - lexik_jwt_authentication.jwt_token_authenticator
+                    - App\Security\Authenticator\TokenAuthenticator
 
     access_control:
-        - { path: ^/token,          roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/public_area,    roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/token,          roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/,               roles: IS_AUTHENTICATED_FULLY }

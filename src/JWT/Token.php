@@ -4,6 +4,8 @@ namespace App\JWT;
 
 class Token
 {
+    const TYPE_BEARER = 'Bearer'; // Basic, Digest ...
+
     /**
      * 用户访问令牌.
      *
@@ -12,11 +14,11 @@ class Token
     private $accessToken;
 
     /**
-     * 刷新令牌，用于重新获取访问令牌.
+     * 令牌类型，暂时仅支持 Bearer.
      *
      * @var string
      */
-    private $refreshToken;
+    private $tokenType;
 
     /**
      * 令牌有效期，单位为秒.
@@ -25,11 +27,19 @@ class Token
      */
     private $expiresIn;
 
-    public function __construct(string $accessToken, string $refreshToken, int $expiresIn)
+    /**
+     * 刷新令牌，用于重新获取访问令牌.
+     *
+     * @var string
+     */
+    private $refreshToken;
+
+    public function __construct(string $accessToken, string $tokenType, int $expiresIn, string $refreshToken)
     {
         $this->accessToken = $accessToken;
-        $this->refreshToken = $refreshToken;
+        $this->tokenType = $tokenType;
         $this->expiresIn = $expiresIn;
+        $this->refreshToken = $refreshToken;
     }
 
     public function getAccessToken()
@@ -37,13 +47,18 @@ class Token
         return $this->accessToken;
     }
 
-    public function getRefreshToken()
+    public function getTokenType()
     {
-        return $this->refreshToken;
+        return $this->tokenType;
     }
 
     public function getExpiresIn()
     {
         return $this->expiresIn;
+    }
+
+    public function getRefreshToken()
+    {
+        return $this->refreshToken;
     }
 }

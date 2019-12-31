@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Tests;
+namespace App\Tests\JWT;
 
 use App\Entity\User;
 use App\JWT\RefreshTokenGenerator;
@@ -14,9 +14,9 @@ class RefreshTokenGeneratorTest extends TestCase
         $user->setUsername('siganushka');
         $user->setAvatar('http://placehold.it/320x320');
         $user->setCreatedAt(new \DateTimeImmutable());
-        
+
         $generator = new RefreshTokenGenerator();
 
-        dd($generator->generate($user));
+        $this->assertNotEmpty($generator->generate($user));
     }
 }
