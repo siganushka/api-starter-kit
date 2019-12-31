@@ -11,7 +11,7 @@ class RefreshTokenManager implements RefreshTokenManagerInterface
     private $entityManager;
     private $refreshTokenGenerator;
 
-    public function __construct(EntityManagerInterface $entityManager, RefreshTokenGenerator $refreshTokenGenerator, $userProvider)
+    public function __construct(EntityManagerInterface $entityManager, RefreshTokenGenerator $refreshTokenGenerator)
     {
         $this->entityManager = $entityManager;
         $this->refreshTokenGenerator = $refreshTokenGenerator;
