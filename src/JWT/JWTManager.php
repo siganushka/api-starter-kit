@@ -6,11 +6,11 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 class JWTManager
 {
-    private $jwsProvider;
+    private $jwtProvider;
 
-    public function __construct(JWSProvider $jwsProvider)
+    public function __construct(JWTProvider $jwtProvider)
     {
-        $this->jwsProvider = $jwsProvider;
+        $this->jwtProvider = $jwtProvider;
     }
 
     public function encode(UserInterface $user)
@@ -20,11 +20,11 @@ class JWTManager
             'username' => $user->getUsername(),
         ];
 
-        return $this->jwsProvider->create($payload);
+        return $this->jwtProvider->create($payload);
     }
 
     public function decode(string $jwt)
     {
-        return $this->jwsProvider->load($jwt);
+        return $this->jwtProvider->load($jwt);
     }
 }

@@ -29,8 +29,8 @@ security:
                 authenticators:
                     - App\Security\Authenticator\RefreshTokenAuthenticator
 
-        token:
-            pattern: ^/v1/token
+        access_token:
+            pattern: ^/v1/access_token
             stateless: true
             anonymous: lazy
             provider: app_user_provider
@@ -48,6 +48,6 @@ security:
                     - App\Security\Authenticator\TokenAuthenticator
 
     access_control:
-        - { path: ^/v1/public_area, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/v1/token,       roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/v1,             roles: IS_AUTHENTICATED_FULLY }
+        - { path: ^/v1/public_area,     roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/v1/access_token,    roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/v1,                 roles: IS_AUTHENTICATED_FULLY }

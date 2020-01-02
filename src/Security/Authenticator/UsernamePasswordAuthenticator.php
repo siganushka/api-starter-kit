@@ -2,9 +2,9 @@
 
 namespace App\Security\Authenticator;
 
+use App\JWT\AccessToken;
 use App\JWT\JWTManager;
 use App\JWT\RefreshTokenManager;
-use App\JWT\Token;
 use FOS\RestBundle\View\View;
 use FOS\RestBundle\View\ViewHandlerInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -25,7 +25,7 @@ class UsernamePasswordAuthenticator extends AbstractGuardAuthenticator
     private $httpUtils;
     private $passwordEncoder;
     private $viewHandler;
-    private $JWTManager;
+    private $jwtManager;
     private $refreshTokenManager;
     private $options;
     private $ttl;
@@ -34,7 +34,7 @@ class UsernamePasswordAuthenticator extends AbstractGuardAuthenticator
         HttpUtils $httpUtils,
         UserPasswordEncoderInterface $passwordEncoder,
         ViewHandlerInterface $viewHandler,
-        JWTManager $JWTManager,
+        JWTManager $jwtManager,
         RefreshTokenManager $refreshTokenManager,
         array $options = [],
         int $ttl)
@@ -42,12 +42,12 @@ class UsernamePasswordAuthenticator extends AbstractGuardAuthenticator
         $this->httpUtils = $httpUtils;
         $this->passwordEncoder = $passwordEncoder;
         $this->viewHandler = $viewHandler;
-        $this->JWTManager = $JWTManager;
+        $this->jwtManager = $jwtManager;
         $this->refreshTokenManager = $refreshTokenManager;
         $this->options = array_merge([
             'username_path' => 'username',
             'password_path' => 'password',
-            'check_path' => '/v1/token',
+            'check_path' => 'api_access_token',
         ], $options);
         $this->ttl = $ttl;
     }
@@ -114,10 +114,10 @@ class UsernamePasswordAuthenticator extends AbstractGuardAuthenticator
             throw $th;
         }
 
-        $jwt = (string) $this->JWTManager->encode($token->getUser());
+        $jwt = (string) $this->jwtManager->encode($token->getUser());
 
-        $token = new Token($jwt, Token::TYPE_BEARER, $this->ttl, $new->getRefreshToken());
-        $view = View::create($token);
+        $accessToken = new AccessToken($jwt, $new->getRefreshToken(), $this->ttl);
+        $view = View::create($accessToken);
 
         return $this->viewHandler->handle($view);
     }

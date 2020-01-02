@@ -15,6 +15,8 @@
 #            - { path: ^/api, prefer_extension: true, fallback_format: json, priorities: [ json, html ] }
 
 fos_rest:
+    view:
+        view_response_listener:  true
     format_listener:
         rules:
-            - { path: ^/, prefer_extension: true, fallback_format: json, priorities: [ json, xml, html ] }
+            - { path: ^/v1, prefer_extension: true, fallback_format: json, priorities: [ json, xml, html ] }

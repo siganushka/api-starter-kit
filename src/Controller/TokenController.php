@@ -1,9 +1,8 @@
 <?php
 
-namespace App\Controller\V1;
+namespace App\Controller;
 
-use App\JWT\JWTManager;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use FOS\RestBundle\Controller\AbstractFOSRestController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\User\UserInterface;
 
@@ -15,12 +14,12 @@ use Symfony\Component\Security\Core\User\UserInterface;
  * @apiSuccess (Success 200) {String} expires_in 访问令牌有效期，过期后需要客户端主动刷新
  * @apiSuccess (Success 200) {String} refresh_token 刷新令牌，需要客户端保存，有效期固定 30 天
  */
-class TokenController extends AbstractController
+class TokenController extends AbstractFOSRestController
 {
     /**
-     * @Route("/token", name="api_token", methods={"POST"})
+     * @Route("/access_token", name="api_access_token", methods={"POST"})
      *
-     * @api {post} /token 获取认证令牌
+     * @api {post} /access_token 获取认证令牌
      *
      * @apiGroup Token
      * @apiVersion 0.1.0
@@ -30,7 +29,7 @@ class TokenController extends AbstractController
      *
      * @apiUse TokenModel
      */
-    public function token()
+    public function accessToken()
     {
         // controller can be blank: it will never be executed!
     }
@@ -57,9 +56,16 @@ class TokenController extends AbstractController
      *
      * @return void
      */
-    public function private_area(UserInterface $user)
+    public function privateArea(UserInterface $user)
     {
-        dd($user);
+        $view = $this->view($user);
+
+        $context = $view->getContext();
+        $context->addGroup('user');
+
+        $view->setContext($context);
+
+        return $view;
     }
 
     /**
@@ -67,14 +73,8 @@ class TokenController extends AbstractController
      *
      * @return void
      */
-    public function public_area(JWTManager $JWTManager)
+    public function publicArea()
     {
-        $em = $this->getDoctrine()->getManager();
-
-        $user = $em->find('App\Entity\User', 1);
-
-        dd($JWTManager->encode($user));
-
-        // dd($JWTManager->decode('eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE1Nzc3MDEyNjAsImV4cCI6MTU3NzcwNDg2MCwicm9sZXMiOlsiUk9MRV9VU0VSIl0sInVzZXJuYW1lIjoic2lnYW51c2hrYSJ9.F5B_JRYyhNofMYCRqw3AeGF_WLwetS4PLYUBUaPm5wc'));
+        return $this->view(['success' => 'Hello World']);
     }
 }

@@ -21,18 +21,18 @@ class TokenAuthenticator extends AbstractGuardAuthenticator
     private $userChecker;
     private $viewHandler;
     private $tokenExtractor;
-    private $JWTManager;
+    private $jwtManager;
 
     public function __construct(
         UserCheckerInterface $userChecker,
         ViewHandlerInterface $viewHandler,
         TokenExtractorInterface $tokenExtractor,
-        JWTManager $JWTManager)
+        JWTManager $jwtManager)
     {
         $this->userChecker = $userChecker;
         $this->viewHandler = $viewHandler;
         $this->tokenExtractor = $tokenExtractor;
-        $this->JWTManager = $JWTManager;
+        $this->jwtManager = $jwtManager;
     }
 
     public function supports(Request $request)
@@ -48,9 +48,9 @@ class TokenAuthenticator extends AbstractGuardAuthenticator
     public function getUser($credentials, UserProviderInterface $userProvider)
     {
         try {
-            $token = $this->JWTManager->decode($credentials);
+            $token = $this->jwtManager->decode($credentials);
         } catch (\Throwable $th) {
-            throw new CustomUserMessageAuthenticationException('asdf');
+            throw new CustomUserMessageAuthenticationException($th->getMessage());
         }
 
         try {
@@ -72,7 +72,12 @@ class TokenAuthenticator extends AbstractGuardAuthenticator
 
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception)
     {
-        throw $exception;
+        $view = View::create([
+            'code' => Response::HTTP_UNAUTHORIZED,
+            'message' => strtr($exception->getMessageKey(), $exception->getMessageData()),
+        ]);
+
+        return $this->viewHandler->handle($view);
     }
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey)

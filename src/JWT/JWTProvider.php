@@ -8,18 +8,15 @@ use Lcobucci\JWT\Signer\Hmac\Sha256;
 use Lcobucci\JWT\Signer\Key;
 use Lcobucci\JWT\Token;
 
-class JWSProvider
+class JWTProvider
 {
-    private $publicKey;
-    private $privateKey;
-    private $passphrase;
-    private $ttl;
+    private $signer;
+    private $key;
 
-    public function __construct(string $publicKey, string $privateKey, string $passphrase, int $ttl)
+    public function __construct(string $key, int $ttl)
     {
-        $this->publicKey = $publicKey;
-        $this->privateKey = $privateKey;
-        $this->passphrase = $passphrase;
+        $this->signer = new Sha256();
+        $this->key = new Key($key);
         $this->ttl = $ttl;
     }
 
@@ -38,7 +35,7 @@ class JWSProvider
         }
 
         try {
-            $builder->sign(new Sha256(), new Key($this->privateKey, $this->passphrase));
+            $builder->sign($this->signer, $this->key);
         } catch (\Throwable $th) {
             throw new \RuntimeException('Invalid JWT Token');
         }
@@ -48,18 +45,23 @@ class JWSProvider
 
     public function load(string $jwt): Token
     {
-        $token = (new Parser())->parse($jwt);
+        try {
+            $token = (new Parser())->parse($jwt);
+        } catch (\Throwable $th) {
+            throw new \RuntimeException('Invalid JWT Token');
+        }
 
-        $signer = new Sha256();
-        $key = new Key($this->privateKey, $this->passphrase);
-
-        $isValid = $token->verify($signer, $key);
+        $isValid = $token->verify($this->signer, $this->key);
         if (!$isValid) {
             throw new \RuntimeException('Invalid JWT Token');
         }
 
         $exp = $token->getClaim('exp');
         if ((null === $exp) || !is_numeric($exp)) {
+            throw new \RuntimeException('Invalid JWT Token');
+        }
+
+        if ((time() - $exp) > 0) {
             throw new \RuntimeException('Expired JWT Token');
         }
 

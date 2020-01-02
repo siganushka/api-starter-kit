@@ -17,12 +17,7 @@ class RefreshTokenManager
         $this->refreshTokenGenerator = $refreshTokenGenerator;
     }
 
-    /**
-     * 更新刷新令牌.
-     *
-     * @return void
-     */
-    public function update(UserInterface $user): UserToken
+    public function update(UserInterface $user)
     {
         $updatedAt = new \DateTimeImmutable();
         $expireAt = $updatedAt->modify('+15 days');
@@ -43,11 +38,6 @@ class RefreshTokenManager
         return $token;
     }
 
-    /**
-     * 销毁刷新令牌.
-     *
-     * @return void
-     */
     public function destroy(UserInterface $user)
     {
     }
