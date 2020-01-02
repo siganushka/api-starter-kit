@@ -21,13 +21,6 @@ class User implements UserInterface
     private $id;
 
     /**
-     * @ORM\Column(type="json")
-     *
-     * @Groups({"user"})
-     */
-    private $roles = [];
-
-    /**
      * @ORM\Column(type="string", length=180, unique=true)
      *
      * @Groups({"user"})
@@ -70,21 +63,6 @@ class User implements UserInterface
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    public function getRoles(): array
-    {
-        $roles = $this->roles;
-        $roles[] = 'ROLE_USER';
-
-        return array_unique($roles);
-    }
-
-    public function setRoles(array $roles): self
-    {
-        $this->roles = $roles;
-
-        return $this;
     }
 
     public function getUsername(): string
@@ -145,6 +123,11 @@ class User implements UserInterface
         $this->createdAt = $createdAt;
 
         return $this;
+    }
+
+    public function getRoles(): array
+    {
+        return ['ROLE_USER'];
     }
 
     public function getSalt()
