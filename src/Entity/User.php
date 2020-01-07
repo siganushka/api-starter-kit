@@ -29,8 +29,6 @@ class User implements UserInterface
 
     /**
      * @ORM\Column(type="string")
-     *
-     * @Groups({"user"})
      */
     private $password;
 
@@ -54,11 +52,6 @@ class User implements UserInterface
      * @Groups({"user"})
      */
     private $createdAt;
-
-    /**
-     * @ORM\OneToOne(targetEntity="App\Entity\UserToken", mappedBy="user", cascade={"persist", "remove"})
-     */
-    private $token;
 
     public function getId(): ?int
     {
@@ -139,23 +132,5 @@ class User implements UserInterface
     {
         // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;
-    }
-
-    public function getToken(): ?UserToken
-    {
-        return $this->token;
-    }
-
-    public function setToken(?UserToken $token): self
-    {
-        $this->token = $token;
-
-        // set (or unset) the owning side of the relation if necessary
-        $newUser = null === $token ? null : $this;
-        if ($token->getUser() !== $newUser) {
-            $token->setUser($newUser);
-        }
-
-        return $this;
     }
 }

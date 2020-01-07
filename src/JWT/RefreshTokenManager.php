@@ -2,43 +2,60 @@
 
 namespace App\JWT;
 
-use App\Entity\UserToken;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 class RefreshTokenManager
 {
-    private $entityManager;
-    private $refreshTokenGenerator;
+    private $redis;
 
-    public function __construct(EntityManagerInterface $entityManager, RefreshTokenGenerator $refreshTokenGenerator)
+    public function __construct(\Redis $redis)
     {
-        $this->entityManager = $entityManager;
-        $this->refreshTokenGenerator = $refreshTokenGenerator;
+        $this->redis = $redis;
     }
 
-    public function update(UserInterface $user)
+    public function findUsername(string $refreshToken)
     {
-        $updatedAt = new \DateTimeImmutable();
-        $expireAt = $updatedAt->modify('+15 days');
+        return $this->redis->get($refreshToken);
+    }
 
-        $token = $user->getToken();
-        if (!$token instanceof UserToken) {
-            $token = new UserToken();
-            $token->setCreatedAt(new \DateTimeImmutable());
-        }
+    public function update(UserInterface $user): string
+    {
+        // destory before update...
+        $this->destroy($user);
 
-        $token->setRefreshToken($this->refreshTokenGenerator->generate($user));
-        $token->setExpireAt($expireAt);
-        $token->setUpdatedAt($updatedAt);
-        $user->setToken($token);
+        $refreshToken = $this->generate($user);
+        $usernameKey = $this->getUsernameKey($user);
 
-        $this->entityManager->flush();
+        $this->redis->multi()
+            ->set($refreshToken, $user->getUsername())
+            ->set($usernameKey, $refreshToken)
+            ->exec();
 
-        return $token;
+        return $refreshToken;
     }
 
     public function destroy(UserInterface $user)
     {
+        $usernameKey = $this->getUsernameKey($user);
+
+        $deletedKeys = [$usernameKey];
+        if (false !== $refreshToken = $this->redis->get($usernameKey)) {
+            array_push($deletedKeys, $refreshToken);
+        }
+
+        $this->redis->del($deletedKeys);
+    }
+
+    public function generate(UserInterface $user): string
+    {
+        $hash = password_hash(uniqid($user->getUsername()), PASSWORD_DEFAULT);
+        $hash = str_replace(['+', '/'], ['-', '_'], base64_encode($hash));
+
+        return $hash;
+    }
+
+    public function getUsernameKey(UserInterface $user): string
+    {
+        return sprintf('user_%s_refresh_token', $user->getUsername());
     }
 }

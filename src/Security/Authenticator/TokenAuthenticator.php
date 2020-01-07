@@ -48,13 +48,13 @@ class TokenAuthenticator extends AbstractGuardAuthenticator
     public function getUser($credentials, UserProviderInterface $userProvider)
     {
         try {
-            $token = $this->jwtManager->decode($credentials);
+            $jwt = $this->jwtManager->load($credentials);
         } catch (\Throwable $th) {
             throw new CustomUserMessageAuthenticationException($th->getMessage());
         }
 
         try {
-            $user = $userProvider->loadUserByUsername($token->getClaim('username'));
+            $user = $userProvider->loadUserByUsername($jwt->getClaim('username'));
         } catch (\Throwable $th) {
             throw new CustomUserMessageAuthenticationException("Invalid jwt token: {$credentials}");
         }

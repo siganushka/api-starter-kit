@@ -61,6 +61,7 @@ class TokenController extends AbstractFOSRestController
         $view = $this->view($user);
 
         $context = $view->getContext();
+        $context->setSerializeNull(true);
         $context->addGroup('user');
 
         $view->setContext($context);

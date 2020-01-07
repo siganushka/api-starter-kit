@@ -20,7 +20,7 @@ use Symfony\Component\Security\Guard\AbstractGuardAuthenticator;
 use Symfony\Component\Security\Http\HttpUtils;
 use Symfony\Component\Security\Http\ParameterBagUtils;
 
-class UsernamePasswordAuthenticator extends AbstractGuardAuthenticator
+class AccessTokenAuthenticator extends AbstractGuardAuthenticator
 {
     private $httpUtils;
     private $passwordEncoder;
@@ -107,16 +107,14 @@ class UsernamePasswordAuthenticator extends AbstractGuardAuthenticator
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey)
     {
-        try {
-            $new = $this->refreshTokenManager->update($token->getUser());
-        } catch (\Throwable $th) {
-            // do stuff...
-            throw $th;
-        }
+        $refreshToken = $this->refreshTokenManager->update($token->getUser());
+        $jwt = (string) $this->jwtManager->create($token->getUser());
 
-        $jwt = (string) $this->jwtManager->encode($token->getUser());
+        $accessToken = new AccessToken($jwt, $refreshToken, $this->ttl);
+        $accessToken->setAccessToken($jwt);
+        $accessToken->setExpiresIn($this->ttl);
+        $accessToken->setRefreshToken($refreshToken);
 
-        $accessToken = new AccessToken($jwt, $new->getRefreshToken(), $this->ttl);
         $view = View::create($accessToken);
 
         return $this->viewHandler->handle($view);

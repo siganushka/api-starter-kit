@@ -10,11 +10,6 @@ security:
                 class: App\Entity\User
                 property: username
 
-        app_user_token_provider:
-            entity:
-                class: App\Entity\UserToken
-                property: refreshToken
-
     firewalls:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
@@ -24,7 +19,6 @@ security:
             pattern: ^/v1/refresh_token
             stateless: true
             anonymous: lazy
-            provider: app_user_token_provider
             guard:
                 authenticators:
                     - App\Security\Authenticator\RefreshTokenAuthenticator
@@ -36,7 +30,7 @@ security:
             provider: app_user_provider
             guard:
                 authenticators:
-                    - App\Security\Authenticator\UsernamePasswordAuthenticator
+                    - App\Security\Authenticator\AccessTokenAuthenticator
 
         main:
             pattern: ^/v1

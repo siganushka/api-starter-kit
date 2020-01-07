@@ -6,25 +6,25 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 class JWTManager
 {
-    private $jwtProvider;
+    private $jwtEncoder;
 
-    public function __construct(JWTProvider $jwtProvider)
+    public function __construct(JWTEncoder $jwtEncoder)
     {
-        $this->jwtProvider = $jwtProvider;
+        $this->jwtEncoder = $jwtEncoder;
     }
 
-    public function encode(UserInterface $user)
+    public function create(UserInterface $user)
     {
         $payload = [
-            'roles' => $user->getRoles(),
+            // 'roles' => $user->getRoles(),
             'username' => $user->getUsername(),
         ];
 
-        return $this->jwtProvider->create($payload);
+        return $this->jwtEncoder->encode($payload);
     }
 
-    public function decode(string $jwt)
+    public function load(string $jwt)
     {
-        return $this->jwtProvider->load($jwt);
+        return $this->jwtEncoder->decode($jwt);
     }
 }

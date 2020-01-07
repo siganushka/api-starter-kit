@@ -50,16 +50,22 @@ class RefreshTokenAuthenticator extends AbstractGuardAuthenticator
 
     public function getCredentials(Request $request)
     {
-        return $this->tokenExtractor->extract($request);
+        $credentials = $this->tokenExtractor->extract($request);
+        if (!$credentials) {
+            throw new CustomUserMessageAuthenticationException('JWT Token not found.');
+        }
+
+        $username = $this->refreshTokenManager->findUsername($credentials);
+        if (!$username) {
+            throw new CustomUserMessageAuthenticationException("Invalid refresh token: {$credentials}");
+        }
+
+        return $username;
     }
 
     public function getUser($credentials, UserProviderInterface $userProvider)
     {
-        try {
-            $user = $userProvider->loadUserByUsername($credentials);
-        } catch (\Throwable $th) {
-            throw new CustomUserMessageAuthenticationException("Invalid refresh token: {$credentials}");
-        }
+        $user = $userProvider->loadUserByUsername($credentials);
 
         $this->userChecker->checkPreAuth($user);
         $this->userChecker->checkPostAuth($user);
@@ -84,12 +90,14 @@ class RefreshTokenAuthenticator extends AbstractGuardAuthenticator
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey)
     {
-        $user = $token->getUser()->getUser();
+        $refreshToken = $this->refreshTokenManager->update($token->getUser());
+        $jwt = (string) $this->jwtManager->create($token->getUser());
 
-        $new = $this->refreshTokenManager->update($user);
-        $jwt = (string) $this->jwtManager->encode($user);
+        $accessToken = new AccessToken($jwt, $refreshToken, $this->ttl);
+        $accessToken->setAccessToken($jwt);
+        $accessToken->setExpiresIn($this->ttl);
+        $accessToken->setRefreshToken($refreshToken);
 
-        $accessToken = new AccessToken($jwt, $new->getRefreshToken(), $this->ttl);
         $view = View::create($accessToken);
 
         return $this->viewHandler->handle($view);

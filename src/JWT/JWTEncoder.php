@@ -8,7 +8,7 @@ use Lcobucci\JWT\Signer\Hmac\Sha256;
 use Lcobucci\JWT\Signer\Key;
 use Lcobucci\JWT\Token;
 
-class JWTProvider
+class JWTEncoder
 {
     private $signer;
     private $key;
@@ -20,7 +20,7 @@ class JWTProvider
         $this->ttl = $ttl;
     }
 
-    public function create(array $payload, array $header = []): Token
+    public function encode(array $payload, array $header = []): Token
     {
         $builder = new Builder();
         $builder->issuedAt(time());
@@ -43,7 +43,7 @@ class JWTProvider
         return $builder->getToken();
     }
 
-    public function load(string $jwt): Token
+    public function decode(string $jwt): Token
     {
         try {
             $token = (new Parser())->parse($jwt);
