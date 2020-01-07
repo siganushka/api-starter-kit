@@ -32,50 +32,50 @@ class AccessToken
      */
     private $refreshToken;
 
-    public function setAccessToken(string $accessToken)
+    public function setAccessToken(string $accessToken): self
     {
         $this->accessToken = $accessToken;
 
         return $this;
     }
 
-    public function getAccessToken()
+    public function getAccessToken(): ?string
     {
         return $this->accessToken;
     }
 
-    public function setTokenType(string $tokenType)
+    public function setTokenType(string $tokenType): self
     {
         $this->tokenType = $tokenType;
 
         return $this;
     }
 
-    public function getTokenType()
+    public function getTokenType(): ?string
     {
         return $this->tokenType;
     }
 
-    public function setExpiresIn(int $expiresIn)
+    public function setExpiresIn(int $expiresIn): self
     {
         $this->expiresIn = $expiresIn;
 
         return $this;
     }
 
-    public function getExpiresIn()
+    public function getExpiresIn(): ?int
     {
         return $this->expiresIn;
     }
 
-    public function setRefreshToken(string $refreshToken)
+    public function setRefreshToken(string $refreshToken): self
     {
         $this->refreshToken = $refreshToken;
 
         return $this;
     }
 
-    public function getRefreshToken()
+    public function getRefreshToken(): ?string
     {
         return $this->refreshToken;
     }
