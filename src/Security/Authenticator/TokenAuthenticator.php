@@ -2,7 +2,7 @@
 
 namespace App\Security\Authenticator;
 
-use App\JWT\JWTManager;
+use App\JWT\JWTEncoder;
 use App\TokenExtractor\TokenExtractorInterface;
 use FOS\RestBundle\View\View;
 use FOS\RestBundle\View\ViewHandlerInterface;
@@ -21,18 +21,18 @@ class TokenAuthenticator extends AbstractGuardAuthenticator
     private $userChecker;
     private $viewHandler;
     private $tokenExtractor;
-    private $jwtManager;
+    private $jwtEncoder;
 
     public function __construct(
         UserCheckerInterface $userChecker,
         ViewHandlerInterface $viewHandler,
         TokenExtractorInterface $tokenExtractor,
-        JWTManager $jwtManager)
+        JWTEncoder $jwtEncoder)
     {
         $this->userChecker = $userChecker;
         $this->viewHandler = $viewHandler;
         $this->tokenExtractor = $tokenExtractor;
-        $this->jwtManager = $jwtManager;
+        $this->jwtEncoder = $jwtEncoder;
     }
 
     public function supports(Request $request)
@@ -48,7 +48,7 @@ class TokenAuthenticator extends AbstractGuardAuthenticator
     public function getUser($credentials, UserProviderInterface $userProvider)
     {
         try {
-            $jwt = $this->jwtManager->load($credentials);
+            $jwt = $this->jwtEncoder->decode($credentials);
         } catch (\Throwable $th) {
             throw new CustomUserMessageAuthenticationException($th->getMessage());
         }

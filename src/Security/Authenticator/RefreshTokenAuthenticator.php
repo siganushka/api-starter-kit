@@ -2,8 +2,7 @@
 
 namespace App\Security\Authenticator;
 
-use App\JWT\AccessToken;
-use App\JWT\JWTManager;
+use App\JWT\AccessTokenManager;
 use App\JWT\RefreshTokenManager;
 use App\TokenExtractor\TokenExtractorInterface;
 use FOS\RestBundle\View\View;
@@ -21,26 +20,23 @@ use Symfony\Component\Security\Guard\AbstractGuardAuthenticator;
 class RefreshTokenAuthenticator extends AbstractGuardAuthenticator
 {
     private $userChecker;
-    private $refreshTokenManager;
-    private $jwtManager;
-    private $tokenExtractor;
     private $viewHandler;
-    private $ttl;
+    private $tokenExtractor;
+    private $refreshTokenManager;
+    private $accessTokenManager;
 
     public function __construct(
         UserCheckerInterface $userChecker,
-        RefreshTokenManager $refreshTokenManager,
-        JWTManager $jwtManager,
-        TokenExtractorInterface $tokenExtractor,
         ViewHandlerInterface $viewHandler,
-        int $ttl)
+        TokenExtractorInterface $tokenExtractor,
+        RefreshTokenManager $refreshTokenManager,
+        AccessTokenManager $accessTokenManager)
     {
         $this->userChecker = $userChecker;
-        $this->refreshTokenManager = $refreshTokenManager;
-        $this->jwtManager = $jwtManager;
-        $this->tokenExtractor = $tokenExtractor;
         $this->viewHandler = $viewHandler;
-        $this->ttl = $ttl;
+        $this->tokenExtractor = $tokenExtractor;
+        $this->refreshTokenManager = $refreshTokenManager;
+        $this->accessTokenManager = $accessTokenManager;
     }
 
     public function supports(Request $request)
@@ -90,13 +86,7 @@ class RefreshTokenAuthenticator extends AbstractGuardAuthenticator
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey)
     {
-        $refreshToken = $this->refreshTokenManager->update($token->getUser());
-        $jwt = (string) $this->jwtManager->create($token->getUser());
-
-        $accessToken = new AccessToken($jwt, $refreshToken, $this->ttl);
-        $accessToken->setAccessToken($jwt);
-        $accessToken->setExpiresIn($this->ttl);
-        $accessToken->setRefreshToken($refreshToken);
+        $accessToken = $this->accessTokenManager->create($token->getUser());
 
         $view = View::create($accessToken);
 

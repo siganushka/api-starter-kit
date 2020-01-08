@@ -2,9 +2,7 @@
 
 namespace App\Security\Authenticator;
 
-use App\JWT\AccessToken;
-use App\JWT\JWTManager;
-use App\JWT\RefreshTokenManager;
+use App\JWT\AccessTokenManager;
 use FOS\RestBundle\View\View;
 use FOS\RestBundle\View\ViewHandlerInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -14,6 +12,7 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\Exception\CustomUserMessageAuthenticationException;
 use Symfony\Component\Security\Core\Security;
+use Symfony\Component\Security\Core\User\UserCheckerInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 use Symfony\Component\Security\Guard\AbstractGuardAuthenticator;
@@ -23,33 +22,30 @@ use Symfony\Component\Security\Http\ParameterBagUtils;
 class AccessTokenAuthenticator extends AbstractGuardAuthenticator
 {
     private $httpUtils;
+    private $userChecker;
     private $passwordEncoder;
     private $viewHandler;
-    private $jwtManager;
-    private $refreshTokenManager;
+    private $accessTokenManager;
     private $options;
-    private $ttl;
 
     public function __construct(
         HttpUtils $httpUtils,
+        UserCheckerInterface $userChecker,
         UserPasswordEncoderInterface $passwordEncoder,
         ViewHandlerInterface $viewHandler,
-        JWTManager $jwtManager,
-        RefreshTokenManager $refreshTokenManager,
-        array $options = [],
-        int $ttl)
+        AccessTokenManager $accessTokenManager,
+        array $options = [])
     {
         $this->httpUtils = $httpUtils;
+        $this->userChecker = $userChecker;
         $this->passwordEncoder = $passwordEncoder;
         $this->viewHandler = $viewHandler;
-        $this->jwtManager = $jwtManager;
-        $this->refreshTokenManager = $refreshTokenManager;
+        $this->accessTokenManager = $accessTokenManager;
         $this->options = array_merge([
             'username_path' => 'username',
             'password_path' => 'password',
             'check_path' => 'api_access_token',
         ], $options);
-        $this->ttl = $ttl;
     }
 
     public function supports(Request $request)
@@ -87,7 +83,12 @@ class AccessTokenAuthenticator extends AbstractGuardAuthenticator
 
     public function getUser($credentials, UserProviderInterface $userProvider)
     {
-        return $userProvider->loadUserByUsername($credentials['username']);
+        $user = $userProvider->loadUserByUsername($credentials['username']);
+
+        $this->userChecker->checkPreAuth($user);
+        $this->userChecker->checkPostAuth($user);
+
+        return $user;
     }
 
     public function checkCredentials($credentials, UserInterface $user)
@@ -107,13 +108,7 @@ class AccessTokenAuthenticator extends AbstractGuardAuthenticator
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey)
     {
-        $refreshToken = $this->refreshTokenManager->update($token->getUser());
-        $jwt = (string) $this->jwtManager->create($token->getUser());
-
-        $accessToken = new AccessToken($jwt, $refreshToken, $this->ttl);
-        $accessToken->setAccessToken($jwt);
-        $accessToken->setExpiresIn($this->ttl);
-        $accessToken->setRefreshToken($refreshToken);
+        $accessToken = $this->accessTokenManager->create($token->getUser());
 
         $view = View::create($accessToken);
 
@@ -124,7 +119,7 @@ class AccessTokenAuthenticator extends AbstractGuardAuthenticator
     {
         $view = View::create([
             'code' => Response::HTTP_UNAUTHORIZED,
-            'message' => 'JWT Token not found.',
+            'message' => 'Login Required.',
         ]);
 
         return $this->viewHandler->handle($view);
