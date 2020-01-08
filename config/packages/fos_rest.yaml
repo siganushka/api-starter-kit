@@ -15,9 +15,11 @@
 #            - { path: ^/api, prefer_extension: true, fallback_format: json, priorities: [ json, html ] }
 
 fos_rest:
+    serializer:
+        serialize_null: true
     view:
         view_response_listener:  true
     format_listener:
         rules:
-            - { path: ^/v1, prefer_extension: true, fallback_format: json, priorities: [ json, xml, html ] }
-            - { path: ^/,   fallback_format: html }
+            - { path: ^/v1, prefer_extension: true, fallback_format: json, priorities: [ json, xml ] }
+            - { path: ^/,   prefer_extension: true, fallback_format: html }

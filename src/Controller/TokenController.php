@@ -54,7 +54,7 @@ class TokenController extends AbstractFOSRestController
     /**
      * @Route("/private_area", name="api_private_area", methods={"GET"})
      *
-     * @return void
+     * @return Response
      */
     public function privateArea(UserInterface $user)
     {
@@ -72,10 +72,21 @@ class TokenController extends AbstractFOSRestController
     /**
      * @Route("/public_area", name="api_public_area", methods={"GET"})
      *
-     * @return void
+     * @return Response
      */
     public function publicArea()
     {
-        return $this->view(['success' => 'Hello World']);
+        $view = $this->view(['success' => 'Hello World']);
+
+        $context = $view->getContext();
+        $context->setAttribute('xml_root_node_name', 'xml');
+        $context->setAttribute('xml_encoding', 'UTF-8');
+        $context->setAttribute('xml_format_output', false);
+        $context->setAttribute('xml_standalone', false);
+        $context->setAttribute('xml_version', '1.0');
+
+        $view->setContext($context);
+
+        return $view;
     }
 }
