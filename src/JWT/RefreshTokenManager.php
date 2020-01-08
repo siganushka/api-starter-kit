@@ -56,6 +56,6 @@ class RefreshTokenManager
 
     public function getUsernameKey(UserInterface $user): string
     {
-        return sprintf('user_%s_refresh_token', $user->getUsername());
+        return sprintf('refresh_token_%s', $user->getUsername());
     }
 }
