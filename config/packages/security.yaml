@@ -39,9 +39,8 @@ security:
             provider: app_user_provider
             guard:
                 authenticators:
-                    - App\Security\Authenticator\TokenAuthenticator
+                    - App\Security\Authenticator\ApiAuthenticator
 
     access_control:
         - { path: ^/v1/public_area,     roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/v1/access_token,    roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/v1,                 roles: IS_AUTHENTICATED_FULLY }

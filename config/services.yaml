@@ -37,7 +37,7 @@ services:
             - ['addExtractor', ['@App\TokenExtractor\AuthorizationHeaderExtractor']]
             - ['addExtractor', ['@App\TokenExtractor\QueryParameterExtractor']]
 
-    App\Security\Authenticator\TokenAuthenticator:
+    App\Security\Authenticator\ApiAuthenticator:
         $tokenExtractor: '@App\TokenExtractor\ChainExtractor'
 
     App\Security\Authenticator\RefreshTokenAuthenticator:
