@@ -47,9 +47,6 @@ class RefreshTokenAuthenticator extends AbstractGuardAuthenticator
     public function getCredentials(Request $request)
     {
         $credentials = $this->tokenExtractor->extract($request);
-        if (!$credentials) {
-            throw new CustomUserMessageAuthenticationException('JWT Token not found.');
-        }
 
         $username = $this->refreshTokenManager->findUsername($credentials);
         if (!$username) {

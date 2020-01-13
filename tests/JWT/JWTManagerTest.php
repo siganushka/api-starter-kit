@@ -2,18 +2,17 @@
 
 namespace App\Tests\JWT;
 
-use App\JWT\JWTEncoder;
+use App\JWT\JWTManager;
 use Lcobucci\JWT\Token;
 use PHPUnit\Framework\TestCase;
 
-class JWTEncoderTest extends TestCase
+class JWTManagerTest extends TestCase
 {
     public function testEncoder()
     {
-        $jwtEncoder = new JWTEncoder('foo', 3600);
+        $jwtManager = new JWTManager('foo', 3600);
 
         $payload = [
-            'uid' => 1024,
             'email' => 'foo@bar.com',
         ];
 
@@ -21,13 +20,11 @@ class JWTEncoderTest extends TestCase
             'ext' => 'info...',
         ];
 
-        $jwt = $jwtEncoder->encode($payload, $headers);
+        $jwt = $jwtManager->create($payload, $headers);
         $this->assertInstanceOf(Token::class, $jwt);
         $this->assertIsString((string) $jwt);
 
-        $token = $jwtEncoder->decode($jwt);
-
-        $this->assertEquals($payload['uid'], $token->getClaim('uid'));
+        $token = $jwtManager->parse($jwt);
         $this->assertEquals($payload['email'], $token->getClaim('email'));
         $this->assertEquals($headers['ext'], $token->getHeader('ext'));
     }

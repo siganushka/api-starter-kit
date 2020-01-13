@@ -6,13 +6,13 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 class AccessTokenManager
 {
-    private $jwtEncoder;
+    private $jwtManager;
     private $refreshTokenManager;
     private $ttl;
 
-    public function __construct(JWTEncoder $jwtEncoder, RefreshTokenManager $refreshTokenManager, int $ttl)
+    public function __construct(JWTManagerInterface $jwtManager, RefreshTokenManager $refreshTokenManager, int $ttl)
     {
-        $this->jwtEncoder = $jwtEncoder;
+        $this->jwtManager = $jwtManager;
         $this->refreshTokenManager = $refreshTokenManager;
         $this->ttl = $ttl;
     }
@@ -25,7 +25,7 @@ class AccessTokenManager
         ];
 
         $refreshToken = $this->refreshTokenManager->update($user);
-        $jwt = (string) $this->jwtEncoder->encode($payload);
+        $jwt = $this->jwtManager->create($payload);
 
         $accessToken = new AccessToken();
         $accessToken->setAccessToken($jwt);
