@@ -51,7 +51,7 @@ class User implements UserInterface
      *
      * @Groups({"user_refresh_token"})
      */
-    private $refreshTokenExpiresAt;
+    private $refreshTokenExpireAt;
 
     /**
      * @ORM\Column(type="datetime", nullable=true)
@@ -120,25 +120,25 @@ class User implements UserInterface
         return $this;
     }
 
-    public function getRefreshTokenExpiresAt(): ?\DateTimeInterface
+    public function getRefreshTokenExpireAt(): ?\DateTimeInterface
     {
-        return $this->refreshTokenExpiresAt;
+        return $this->refreshTokenExpireAt;
     }
 
-    public function setRefreshTokenExpiresAt(?\DateTimeInterface $refreshTokenExpiresAt): self
+    public function setRefreshTokenExpireAt(?\DateTimeInterface $refreshTokenExpireAt): self
     {
-        $this->refreshTokenExpiresAt = $refreshTokenExpiresAt;
+        $this->refreshTokenExpireAt = $refreshTokenExpireAt;
 
         return $this;
     }
 
     public function isRefreshTokenExpired()
     {
-        if (null === $this->refreshTokenExpiresAt) {
+        if (null === $this->refreshTokenExpireAt) {
             return true;
         }
 
-        return (new \DateTime()) > $this->refreshTokenExpiresAt;
+        return (new \DateTime()) > $this->refreshTokenExpireAt;
     }
 
     public function getUpdatedAt(): ?\DateTimeInterface

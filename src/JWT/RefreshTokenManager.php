@@ -38,7 +38,7 @@ class RefreshTokenManager
 
         $user->setUpdatedAt($updatedAt);
         $user->setRefreshToken($refreshToken);
-        $user->setRefreshTokenExpiresAt($expiresAt);
+        $user->setRefreshTokenExpireAt($expiresAt);
 
         $this->entityManager->flush();
 
