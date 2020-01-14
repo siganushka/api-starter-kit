@@ -2,7 +2,7 @@
 
 namespace App\Security\Authenticator;
 
-use App\JWT\AccessTokenManager;
+use App\JWT\AccessTokenManagerInterface;
 use FOS\RestBundle\View\View;
 use FOS\RestBundle\View\ViewHandlerInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -32,7 +32,7 @@ class AccessTokenAuthenticator extends AbstractGuardAuthenticator
         UserCheckerInterface $userChecker,
         UserPasswordEncoderInterface $passwordEncoder,
         ViewHandlerInterface $viewHandler,
-        AccessTokenManager $accessTokenManager,
+        AccessTokenManagerInterface $accessTokenManager,
         array $options = [])
     {
         $this->httpUtils = $httpUtils;

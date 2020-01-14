@@ -11,6 +11,7 @@ class JWTManager implements JWTManagerInterface
 {
     private $signer;
     private $secret;
+    private $ttl;
 
     public function __construct(string $secret, int $ttl)
     {

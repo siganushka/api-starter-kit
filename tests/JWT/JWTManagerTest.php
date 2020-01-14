@@ -2,15 +2,17 @@
 
 namespace App\Tests\JWT;
 
-use App\JWT\JWTManager;
+use App\JWT\JWTManagerInterface;
 use Lcobucci\JWT\Token;
-use PHPUnit\Framework\TestCase;
+use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
-class JWTManagerTest extends TestCase
+class JWTManagerTest extends WebTestCase
 {
-    public function testEncoder()
+    public function testJWTManager()
     {
-        $jwtManager = new JWTManager('foo', 3600);
+        self::bootKernel();
+
+        $jwtManager = self::$container->get(JWTManagerInterface::class);
 
         $payload = [
             'email' => 'foo@bar.com',
@@ -22,7 +24,7 @@ class JWTManagerTest extends TestCase
 
         $jwt = $jwtManager->create($payload, $headers);
         $this->assertInstanceOf(Token::class, $jwt);
-        $this->assertIsString((string) $jwt);
+        $this->assertEquals(2, substr_count($jwt, '.'));
 
         $token = $jwtManager->parse($jwt);
         $this->assertEquals($payload['email'], $token->getClaim('email'));

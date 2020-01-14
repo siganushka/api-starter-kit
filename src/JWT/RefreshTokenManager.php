@@ -3,47 +3,58 @@
 namespace App\JWT;
 
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Security\Core\User\UserProviderInterface;
 
-class RefreshTokenManager
+class RefreshTokenManager implements RefreshTokenManagerInterface
 {
+    private $provider;
     private $redis;
 
-    public function __construct(\Redis $redis)
+    public function __construct(UserProviderInterface $provider, \Redis $redis)
     {
+        $this->provider = $provider;
         $this->redis = $redis;
     }
 
-    public function findUsername(string $refreshToken)
+    public function loadUserByRefreshToken(string $refreshToken): UserInterface
     {
-        return $this->redis->get($refreshToken);
+        $username = $this->redis->get($refreshToken);
+        if (!$username) {
+            throw new \RuntimeException("Invalid refresh token: {$refreshToken}");
+        }
+
+        return $this->provider->loadUserByUsername($username);
     }
 
     public function update(UserInterface $user): string
     {
         // destory before update...
-        $this->destroy($user);
+        $username = $user->getUsername();
+        if (false !== $dirtyValue = $this->redis->get($username)) {
+            $this->redis->del($dirtyValue);
+        }
 
         $refreshToken = $this->generate($user);
-        $usernameKey = $this->getUsernameKey($user);
-
         $this->redis->multi()
-            ->set($refreshToken, $user->getUsername())
-            ->set($usernameKey, $refreshToken)
+            ->set($refreshToken, $username)
+            ->set($username, $refreshToken)
             ->exec();
 
         return $refreshToken;
     }
 
-    public function destroy(UserInterface $user)
+    public function destroy(UserInterface $user): bool
     {
-        $usernameKey = $this->getUsernameKey($user);
+        $username = $user->getUsername();
 
-        $deletedKeys = [$usernameKey];
-        if (false !== $refreshToken = $this->redis->get($usernameKey)) {
-            array_push($deletedKeys, $refreshToken);
+        $deletedKeys = [$username];
+        if (false !== $dirtyValue = $this->redis->get($username)) {
+            array_push($deletedKeys, $dirtyValue);
         }
 
         $this->redis->del($deletedKeys);
+
+        return true;
     }
 
     public function generate(UserInterface $user): string
@@ -52,10 +63,5 @@ class RefreshTokenManager
         $hash = str_replace(['+', '/'], ['-', '_'], base64_encode($hash));
 
         return $hash;
-    }
-
-    public function getUsernameKey(UserInterface $user): string
-    {
-        return sprintf('refresh_token_%s', $user->getUsername());
     }
 }

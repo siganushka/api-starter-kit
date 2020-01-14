@@ -51,4 +51,5 @@ services:
         $ttl: '%token_ttl%'
 
     App\JWT\RefreshTokenManager:
+        $provider: '@security.user.provider.concrete.app_user_provider'
         $redis: '@redis_client'

@@ -2,8 +2,8 @@
 
 namespace App\Security\Authenticator;
 
-use App\JWT\AccessTokenManager;
-use App\JWT\RefreshTokenManager;
+use App\JWT\AccessTokenManagerInterface;
+use App\JWT\RefreshTokenManagerInterface;
 use App\TokenExtractor\TokenExtractorInterface;
 use FOS\RestBundle\View\View;
 use FOS\RestBundle\View\ViewHandlerInterface;
@@ -29,8 +29,8 @@ class RefreshTokenAuthenticator extends AbstractGuardAuthenticator
         UserCheckerInterface $userChecker,
         ViewHandlerInterface $viewHandler,
         TokenExtractorInterface $tokenExtractor,
-        RefreshTokenManager $refreshTokenManager,
-        AccessTokenManager $accessTokenManager)
+        RefreshTokenManagerInterface $refreshTokenManager,
+        AccessTokenManagerInterface $accessTokenManager)
     {
         $this->userChecker = $userChecker;
         $this->viewHandler = $viewHandler;
@@ -46,19 +46,16 @@ class RefreshTokenAuthenticator extends AbstractGuardAuthenticator
 
     public function getCredentials(Request $request)
     {
-        $credentials = $this->tokenExtractor->extract($request);
-
-        $username = $this->refreshTokenManager->findUsername($credentials);
-        if (!$username) {
-            throw new CustomUserMessageAuthenticationException("Invalid refresh token: {$credentials}");
-        }
-
-        return $username;
+        return $this->tokenExtractor->extract($request);
     }
 
     public function getUser($credentials, UserProviderInterface $userProvider)
     {
-        $user = $userProvider->loadUserByUsername($credentials);
+        try {
+            $user = $this->refreshTokenManager->loadUserByRefreshToken($credentials);
+        } catch (\Throwable $th) {
+            throw new CustomUserMessageAuthenticationException($th->getMessage());
+        }
 
         $this->userChecker->checkPreAuth($user);
         $this->userChecker->checkPostAuth($user);

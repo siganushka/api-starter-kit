@@ -2,25 +2,37 @@
 
 namespace App\Tests\JWT;
 
-use App\JWT\RefreshTokenManager;
-use PHPUnit\Framework\TestCase;
-use Symfony\Component\Security\Core\User\User;
+use App\JWT\RefreshTokenManagerInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
-class RefreshTokenManagerTest extends TestCase
+class RefreshTokenManagerTest extends WebTestCase
 {
     public function testRefreshTokenManager()
     {
-        $redis = new \Redis();
-        $redis->connect('127.0.0.1', 6379);
+        self::bootKernel();
 
-        $refreshTokenManager = new RefreshTokenManager($redis);
-        $this->assertFalse($refreshTokenManager->findUsername('foo'));
+        $userProvider = self::$container->get('security.user.provider.concrete.app_user_provider');
+        $refreshTokenManager = self::$container->get(RefreshTokenManagerInterface::class);
 
-        $user = new User('siganushka', '123456', ['USER_ROLE']);
-        $this->assertIsString($refreshToken = $refreshTokenManager->update($user));
-        $this->assertEquals('siganushka', $refreshTokenManager->findUsername($refreshToken));
+        $user = $userProvider->loadUserByUsername('siganushka');
+        $refreshToken = $refreshTokenManager->update($user);
 
-        $refreshTokenManager->destroy($user);
-        $this->assertEmpty($refreshTokenManager->findUsername($refreshToken));
+        $this->assertIsString($refreshToken);
+        $this->assertInstanceOf(UserInterface::class, $refreshTokenManager->loadUserByRefreshToken($refreshToken));
+
+        $ret = $refreshTokenManager->destroy($user);
+        $this->assertTrue($ret);
+    }
+
+    /**
+     * @expectedException \RuntimeException
+     */
+    public function testRefreshTokenNotFound()
+    {
+        self::bootKernel();
+
+        $refreshTokenManager = self::$container->get(RefreshTokenManagerInterface::class);
+        $refreshTokenManager->loadUserByRefreshToken('not_exists_refresh_token');
     }
 }
