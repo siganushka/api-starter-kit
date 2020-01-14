@@ -4,6 +4,29 @@ use Symfony\Component\Dotenv\Dotenv;
 
 require dirname(__DIR__).'/vendor/autoload.php';
 
+// ignore apidoc for annotations
+\Doctrine\Common\Annotations\AnnotationReader::addGlobalIgnoredName('api');
+\Doctrine\Common\Annotations\AnnotationReader::addGlobalIgnoredName('apiDefine');
+\Doctrine\Common\Annotations\AnnotationReader::addGlobalIgnoredName('apiDeprecated');
+\Doctrine\Common\Annotations\AnnotationReader::addGlobalIgnoredName('apiDescription');
+\Doctrine\Common\Annotations\AnnotationReader::addGlobalIgnoredName('apiError');
+\Doctrine\Common\Annotations\AnnotationReader::addGlobalIgnoredName('apiErrorExample');
+\Doctrine\Common\Annotations\AnnotationReader::addGlobalIgnoredName('apiExample');
+\Doctrine\Common\Annotations\AnnotationReader::addGlobalIgnoredName('apiGroup');
+\Doctrine\Common\Annotations\AnnotationReader::addGlobalIgnoredName('apiHeader');
+\Doctrine\Common\Annotations\AnnotationReader::addGlobalIgnoredName('apiHeaderExample');
+\Doctrine\Common\Annotations\AnnotationReader::addGlobalIgnoredName('apiIgnore');
+\Doctrine\Common\Annotations\AnnotationReader::addGlobalIgnoredName('apiName');
+\Doctrine\Common\Annotations\AnnotationReader::addGlobalIgnoredName('apiParam');
+\Doctrine\Common\Annotations\AnnotationReader::addGlobalIgnoredName('apiParamExample');
+\Doctrine\Common\Annotations\AnnotationReader::addGlobalIgnoredName('apiPermission');
+\Doctrine\Common\Annotations\AnnotationReader::addGlobalIgnoredName('apiPrivate');
+\Doctrine\Common\Annotations\AnnotationReader::addGlobalIgnoredName('apiSampleRequest');
+\Doctrine\Common\Annotations\AnnotationReader::addGlobalIgnoredName('apiSuccess');
+\Doctrine\Common\Annotations\AnnotationReader::addGlobalIgnoredName('apiSuccessExample');
+\Doctrine\Common\Annotations\AnnotationReader::addGlobalIgnoredName('apiUse');
+\Doctrine\Common\Annotations\AnnotationReader::addGlobalIgnoredName('apiVersion');
+
 // Load cached env vars if the .env.local.php file exists
 // Run "composer dump-env prod" to create it (requires symfony/flex >=1.2)
 if (is_array($env = @include dirname(__DIR__).'/.env.local.php') && ($_SERVER['APP_ENV'] ?? $_ENV['APP_ENV'] ?? $env['APP_ENV'] ?? null) === ($env['APP_ENV'] ?? null)) {
