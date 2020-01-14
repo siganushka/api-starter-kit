@@ -2,8 +2,9 @@
 
 namespace App\Tests\JWT;
 
-use App\JWT\RefreshTokenManagerInterface;
-use Symfony\Component\Security\Core\User\UserInterface;
+use App\Entity\User;
+use App\JWT\RefreshTokenManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class RefreshTokenManagerTest extends WebTestCase
@@ -12,14 +13,18 @@ class RefreshTokenManagerTest extends WebTestCase
     {
         self::bootKernel();
 
-        $userProvider = self::$container->get('security.user.provider.concrete.app_user_provider');
-        $refreshTokenManager = self::$container->get(RefreshTokenManagerInterface::class);
+        $entityManager = self::$container->get(EntityManagerInterface::class);
 
-        $user = $userProvider->loadUserByUsername('siganushka');
-        $refreshToken = $refreshTokenManager->update($user);
+        $user = $entityManager->getRepository(User::class)
+            ->findOneByUsername('siganushka');
 
-        $this->assertIsString($refreshToken);
-        $this->assertInstanceOf(UserInterface::class, $refreshTokenManager->loadUserByRefreshToken($refreshToken));
+        if (!$user) {
+            $this->markTestSkipped('must be revisited.');
+        }
+
+        $refreshTokenManager = self::$container->get(RefreshTokenManager::class);
+        $this->assertIsString($refreshToken = $refreshTokenManager->update($user));
+        $this->assertInstanceOf(User::class, $refreshTokenManager->loadUserByRefreshToken($refreshToken));
 
         $ret = $refreshTokenManager->destroy($user);
         $this->assertTrue($ret);
@@ -32,7 +37,7 @@ class RefreshTokenManagerTest extends WebTestCase
     {
         self::bootKernel();
 
-        $refreshTokenManager = self::$container->get(RefreshTokenManagerInterface::class);
+        $refreshTokenManager = self::$container->get(RefreshTokenManager::class);
         $refreshTokenManager->loadUserByRefreshToken('not_exists_refresh_token');
     }
 }

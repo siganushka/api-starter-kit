@@ -21,7 +21,7 @@ class User implements UserInterface
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=180, unique=true)
+     * @ORM\Column(type="string", unique=true)
      *
      * @Groups({"user"})
      */
@@ -38,6 +38,20 @@ class User implements UserInterface
      * @Groups({"user"})
      */
     private $avatar;
+
+    /**
+     * @ORM\Column(type="string", nullable=true, unique=true)
+     *
+     * @Groups({"user_refresh_token"})
+     */
+    private $refreshToken;
+
+    /**
+     * @ORM\Column(type="datetime", nullable=true)
+     *
+     * @Groups({"user_refresh_token"})
+     */
+    private $refreshTokenExpiresAt;
 
     /**
      * @ORM\Column(type="datetime", nullable=true)
@@ -92,6 +106,39 @@ class User implements UserInterface
         $this->avatar = $avatar;
 
         return $this;
+    }
+
+    public function getRefreshToken(): ?string
+    {
+        return $this->refreshToken;
+    }
+
+    public function setRefreshToken(?string $refreshToken): self
+    {
+        $this->refreshToken = $refreshToken;
+
+        return $this;
+    }
+
+    public function getRefreshTokenExpiresAt(): ?\DateTimeInterface
+    {
+        return $this->refreshTokenExpiresAt;
+    }
+
+    public function setRefreshTokenExpiresAt(?\DateTimeInterface $refreshTokenExpiresAt): self
+    {
+        $this->refreshTokenExpiresAt = $refreshTokenExpiresAt;
+
+        return $this;
+    }
+
+    public function isRefreshTokenExpired()
+    {
+        if (null === $this->refreshTokenExpiresAt) {
+            return true;
+        }
+
+        return (new \DateTime()) > $this->refreshTokenExpiresAt;
     }
 
     public function getUpdatedAt(): ?\DateTimeInterface

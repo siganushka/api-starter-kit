@@ -2,8 +2,8 @@
 
 namespace App\Security\Authenticator;
 
-use App\JWT\AccessTokenManagerInterface;
-use App\JWT\RefreshTokenManagerInterface;
+use App\JWT\AccessTokenManager;
+use App\JWT\RefreshTokenManager;
 use App\TokenExtractor\TokenExtractorInterface;
 use FOS\RestBundle\View\View;
 use FOS\RestBundle\View\ViewHandlerInterface;
@@ -29,8 +29,8 @@ class RefreshTokenAuthenticator extends AbstractGuardAuthenticator
         UserCheckerInterface $userChecker,
         ViewHandlerInterface $viewHandler,
         TokenExtractorInterface $tokenExtractor,
-        RefreshTokenManagerInterface $refreshTokenManager,
-        AccessTokenManagerInterface $accessTokenManager)
+        RefreshTokenManager $refreshTokenManager,
+        AccessTokenManager $accessTokenManager)
     {
         $this->userChecker = $userChecker;
         $this->viewHandler = $viewHandler;
@@ -55,6 +55,10 @@ class RefreshTokenAuthenticator extends AbstractGuardAuthenticator
             $user = $this->refreshTokenManager->loadUserByRefreshToken($credentials);
         } catch (\Throwable $th) {
             throw new CustomUserMessageAuthenticationException($th->getMessage());
+        }
+
+        if ($user->isRefreshTokenExpired()) {
+            throw new CustomUserMessageAuthenticationException('Expired Refresh Token');
         }
 
         $this->userChecker->checkPreAuth($user);

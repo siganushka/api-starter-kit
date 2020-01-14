@@ -7,7 +7,7 @@ use Lcobucci\JWT\Parser;
 use Lcobucci\JWT\Signer\Hmac\Sha256;
 use Lcobucci\JWT\Token;
 
-class JWTManager implements JWTManagerInterface
+class JWTManager
 {
     private $signer;
     private $secret;
@@ -22,9 +22,12 @@ class JWTManager implements JWTManagerInterface
 
     public function create(array $payload, array $header = []): Token
     {
+        $expiresAt = new \DateTime();
+        $expiresAt->modify(sprintf('+%d seconds', $this->ttl));
+
         $builder = new Builder();
         $builder->issuedAt(time());
-        $builder->expiresAt(time() + $this->ttl);
+        $builder->expiresAt($expiresAt->getTimestamp());
 
         foreach ($payload as $key => $value) {
             $builder->withClaim($key, $value);

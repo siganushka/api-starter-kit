@@ -4,13 +4,13 @@ namespace App\JWT;
 
 use Symfony\Component\Security\Core\User\UserInterface;
 
-class AccessTokenManager implements AccessTokenManagerInterface
+class AccessTokenManager
 {
     private $jwtManager;
     private $refreshTokenManager;
     private $ttl;
 
-    public function __construct(JWTManagerInterface $jwtManager, RefreshTokenManagerInterface $refreshTokenManager, int $ttl)
+    public function __construct(JWTManager $jwtManager, RefreshTokenManager $refreshTokenManager, int $ttl)
     {
         $this->jwtManager = $jwtManager;
         $this->refreshTokenManager = $refreshTokenManager;
@@ -29,8 +29,8 @@ class AccessTokenManager implements AccessTokenManagerInterface
 
         $accessToken = new AccessToken();
         $accessToken->setAccessToken($jwt);
-        $accessToken->setExpiresIn($this->ttl);
         $accessToken->setRefreshToken($refreshToken);
+        $accessToken->setExpiresIn($this->ttl);
 
         return $accessToken;
     }

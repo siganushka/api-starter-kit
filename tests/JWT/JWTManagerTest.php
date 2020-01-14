@@ -2,7 +2,7 @@
 
 namespace App\Tests\JWT;
 
-use App\JWT\JWTManagerInterface;
+use App\JWT\JWTManager;
 use Lcobucci\JWT\Token;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
@@ -12,7 +12,7 @@ class JWTManagerTest extends WebTestCase
     {
         self::bootKernel();
 
-        $jwtManager = self::$container->get(JWTManagerInterface::class);
+        $jwtManager = self::$container->get(JWTManager::class);
 
         $payload = [
             'email' => 'foo@bar.com',

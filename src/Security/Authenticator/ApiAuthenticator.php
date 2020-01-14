@@ -2,7 +2,7 @@
 
 namespace App\Security\Authenticator;
 
-use App\JWT\JWTManagerInterface;
+use App\JWT\JWTManager;
 use App\TokenExtractor\TokenExtractorInterface;
 use FOS\RestBundle\View\View;
 use FOS\RestBundle\View\ViewHandlerInterface;
@@ -27,7 +27,7 @@ class ApiAuthenticator extends AbstractGuardAuthenticator
         UserCheckerInterface $userChecker,
         ViewHandlerInterface $viewHandler,
         TokenExtractorInterface $tokenExtractor,
-        JWTManagerInterface $jwtManager)
+        JWTManager $jwtManager)
     {
         $this->userChecker = $userChecker;
         $this->viewHandler = $viewHandler;

@@ -4,7 +4,8 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
-    token_ttl: 300
+    access_token_ttl: 300
+    refresh_token_ttl: 3600
 
 services:
     # default configuration for services in *this* file
@@ -45,11 +46,10 @@ services:
 
     App\JWT\JWTManager:
         $secret: '%env(resolve:APP_SECRET)%'
-        $ttl: '%token_ttl%'
+        $ttl: '%access_token_ttl%'
 
     App\JWT\AccessTokenManager:
-        $ttl: '%token_ttl%'
+        $ttl: '%access_token_ttl%'
 
     App\JWT\RefreshTokenManager:
-        $provider: '@security.user.provider.concrete.app_user_provider'
-        $redis: '@redis_client'
+        $ttl: '%refresh_token_ttl%'

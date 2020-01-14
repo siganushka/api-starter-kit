@@ -2,7 +2,7 @@
 
 namespace App\Command;
 
-use App\JWT\RefreshTokenManagerInterface;
+use App\JWT\RefreshTokenManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -17,7 +17,7 @@ class RefreshTokenDestroyCommand extends Command
     private $entityManager;
     private $refreshTokenManager;
 
-    public function __construct(EntityManagerInterface $entityManager, RefreshTokenManagerInterface $refreshTokenManager)
+    public function __construct(EntityManagerInterface $entityManager, RefreshTokenManager $refreshTokenManager)
     {
         $this->entityManager = $entityManager;
         $this->refreshTokenManager = $refreshTokenManager;

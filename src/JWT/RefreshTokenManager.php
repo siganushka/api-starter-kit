@@ -2,66 +2,57 @@
 
 namespace App\JWT;
 
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
-use Symfony\Component\Security\Core\User\UserProviderInterface;
 
-class RefreshTokenManager implements RefreshTokenManagerInterface
+class RefreshTokenManager
 {
-    private $provider;
-    private $redis;
+    private $entityManager;
+    private $ttl;
 
-    public function __construct(UserProviderInterface $provider, \Redis $redis)
+    public function __construct(EntityManagerInterface $entityManager, int $ttl)
     {
-        $this->provider = $provider;
-        $this->redis = $redis;
+        $this->entityManager = $entityManager;
+        $this->ttl = $ttl;
     }
 
     public function loadUserByRefreshToken(string $refreshToken): UserInterface
     {
-        $username = $this->redis->get($refreshToken);
-        if (!$username) {
-            throw new \RuntimeException("Invalid refresh token: {$refreshToken}");
+        $user = $this->entityManager->getRepository('App\Entity\User')
+            ->findOneByRefreshToken($refreshToken);
+
+        if (!$user) {
+            throw new \RuntimeException('Invalid refresh token');
         }
 
-        return $this->provider->loadUserByUsername($username);
+        return $user;
     }
 
     public function update(UserInterface $user): string
     {
-        // destory before update...
-        $username = $user->getUsername();
-        if (false !== $dirtyValue = $this->redis->get($username)) {
-            $this->redis->del($dirtyValue);
-        }
+        $refreshToken = password_hash(uniqid($user->getUsername()), PASSWORD_DEFAULT);
+        $refreshToken = str_replace(['+', '/'], ['-', '_'], base64_encode($refreshToken));
 
-        $refreshToken = $this->generate($user);
-        $this->redis->multi()
-            ->set($refreshToken, $username)
-            ->set($username, $refreshToken)
-            ->exec();
+        $updatedAt = new \DateTimeImmutable();
+        $expiresAt = $updatedAt->modify(sprintf('+%d seconds', $this->ttl));
+
+        $user->setUpdatedAt($updatedAt);
+        $user->setRefreshToken($refreshToken);
+        $user->setRefreshTokenExpiresAt($expiresAt);
+
+        $this->entityManager->flush();
 
         return $refreshToken;
     }
 
     public function destroy(UserInterface $user): bool
     {
-        $username = $user->getUsername();
+        $user->setUpdatedAt(new \DateTime());
+        $user->setRefreshToken(null);
+        $user->setRefreshTokenExpireAt(null);
 
-        $deletedKeys = [$username];
-        if (false !== $dirtyValue = $this->redis->get($username)) {
-            array_push($deletedKeys, $dirtyValue);
-        }
-
-        $this->redis->del($deletedKeys);
+        $this->entityManager->flush();
 
         return true;
-    }
-
-    public function generate(UserInterface $user): string
-    {
-        $hash = password_hash(uniqid($user->getUsername()), PASSWORD_DEFAULT);
-        $hash = str_replace(['+', '/'], ['-', '_'], base64_encode($hash));
-
-        return $hash;
     }
 }
