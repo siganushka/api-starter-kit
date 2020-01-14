@@ -11,7 +11,6 @@ use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\Exception\CustomUserMessageAuthenticationException;
-use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Security\Core\User\UserCheckerInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
@@ -68,10 +67,6 @@ class AccessTokenAuthenticator extends AbstractGuardAuthenticator
 
         if (!\is_string($username)) {
             throw new CustomUserMessageAuthenticationException(sprintf('The "%s" must be a string.', $this->options['username_path']));
-        }
-
-        if (\strlen($username) > Security::MAX_USERNAME_LENGTH) {
-            throw new CustomUserMessageAuthenticationException('Invalid username.');
         }
 
         if (!\is_string($password)) {
