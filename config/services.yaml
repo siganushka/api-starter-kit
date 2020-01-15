@@ -28,10 +28,14 @@ services:
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
 
-    redis_client:
-        class: \Redis
-        calls:
-            - ['connect', ['127.0.0.1', 6379]]
+    Symfony\Component\Serializer\Normalizer\DateTimeNormalizer:
+        $defaultContext: { datetime_format: 'Y/m/d H:i:s' }
+
+    Symfony\Component\Serializer\Encoder\JsonEncode:
+        $defaultContext: { json_encode_options: !php/const JSON_UNESCAPED_UNICODE }
+
+    Symfony\Component\Serializer\Encoder\XmlEncoder:
+        $defaultContext: { xml_root_node_name: xml, xml_encoding: UTF-8 }
 
     App\TokenExtractor\ChainExtractor:
         calls:
