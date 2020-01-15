@@ -12,27 +12,23 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\Exception\CustomUserMessageAuthenticationException;
-use Symfony\Component\Security\Core\User\UserCheckerInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 use Symfony\Component\Security\Guard\AbstractGuardAuthenticator;
 
 class RefreshTokenAuthenticator extends AbstractGuardAuthenticator
 {
-    private $userChecker;
     private $viewHandler;
     private $tokenExtractor;
     private $refreshTokenManager;
     private $accessTokenManager;
 
     public function __construct(
-        UserCheckerInterface $userChecker,
         ViewHandlerInterface $viewHandler,
         TokenExtractorInterface $tokenExtractor,
         RefreshTokenManager $refreshTokenManager,
         AccessTokenManager $accessTokenManager)
     {
-        $this->userChecker = $userChecker;
         $this->viewHandler = $viewHandler;
         $this->tokenExtractor = $tokenExtractor;
         $this->refreshTokenManager = $refreshTokenManager;
@@ -60,9 +56,6 @@ class RefreshTokenAuthenticator extends AbstractGuardAuthenticator
         if ($user->isRefreshTokenExpired()) {
             throw new CustomUserMessageAuthenticationException('Expired Refresh Token');
         }
-
-        $this->userChecker->checkPreAuth($user);
-        $this->userChecker->checkPostAuth($user);
 
         return $user;
     }

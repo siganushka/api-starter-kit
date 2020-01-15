@@ -11,25 +11,21 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\Exception\CustomUserMessageAuthenticationException;
-use Symfony\Component\Security\Core\User\UserCheckerInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 use Symfony\Component\Security\Guard\AbstractGuardAuthenticator;
 
 class ApiAuthenticator extends AbstractGuardAuthenticator
 {
-    private $userChecker;
     private $viewHandler;
     private $tokenExtractor;
     private $jwtManager;
 
     public function __construct(
-        UserCheckerInterface $userChecker,
         ViewHandlerInterface $viewHandler,
         TokenExtractorInterface $tokenExtractor,
         JWTManager $jwtManager)
     {
-        $this->userChecker = $userChecker;
         $this->viewHandler = $viewHandler;
         $this->tokenExtractor = $tokenExtractor;
         $this->jwtManager = $jwtManager;
@@ -58,9 +54,6 @@ class ApiAuthenticator extends AbstractGuardAuthenticator
         } catch (\Throwable $th) {
             throw new CustomUserMessageAuthenticationException("Invalid jwt token: {$credentials}");
         }
-
-        $this->userChecker->checkPreAuth($user);
-        $this->userChecker->checkPostAuth($user);
 
         return $user;
     }

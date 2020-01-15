@@ -11,7 +11,6 @@ use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\Exception\CustomUserMessageAuthenticationException;
-use Symfony\Component\Security\Core\User\UserCheckerInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 use Symfony\Component\Security\Guard\AbstractGuardAuthenticator;
@@ -21,7 +20,6 @@ use Symfony\Component\Security\Http\ParameterBagUtils;
 class AccessTokenAuthenticator extends AbstractGuardAuthenticator
 {
     private $httpUtils;
-    private $userChecker;
     private $passwordEncoder;
     private $viewHandler;
     private $accessTokenManager;
@@ -29,14 +27,12 @@ class AccessTokenAuthenticator extends AbstractGuardAuthenticator
 
     public function __construct(
         HttpUtils $httpUtils,
-        UserCheckerInterface $userChecker,
         UserPasswordEncoderInterface $passwordEncoder,
         ViewHandlerInterface $viewHandler,
         AccessTokenManager $accessTokenManager,
         array $options = [])
     {
         $this->httpUtils = $httpUtils;
-        $this->userChecker = $userChecker;
         $this->passwordEncoder = $passwordEncoder;
         $this->viewHandler = $viewHandler;
         $this->accessTokenManager = $accessTokenManager;
@@ -78,12 +74,7 @@ class AccessTokenAuthenticator extends AbstractGuardAuthenticator
 
     public function getUser($credentials, UserProviderInterface $userProvider)
     {
-        $user = $userProvider->loadUserByUsername($credentials['username']);
-
-        $this->userChecker->checkPreAuth($user);
-        $this->userChecker->checkPostAuth($user);
-
-        return $user;
+        return $userProvider->loadUserByUsername($credentials['username']);
     }
 
     public function checkCredentials($credentials, UserInterface $user)
