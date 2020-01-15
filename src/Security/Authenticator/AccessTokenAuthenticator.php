@@ -25,12 +25,7 @@ class AccessTokenAuthenticator extends AbstractGuardAuthenticator
     private $accessTokenManager;
     private $options;
 
-    public function __construct(
-        HttpUtils $httpUtils,
-        UserPasswordEncoderInterface $passwordEncoder,
-        ViewHandlerInterface $viewHandler,
-        AccessTokenManager $accessTokenManager,
-        array $options = [])
+    public function __construct(HttpUtils $httpUtils, UserPasswordEncoderInterface $passwordEncoder, ViewHandlerInterface $viewHandler, AccessTokenManager $accessTokenManager, array $options = [])
     {
         $this->httpUtils = $httpUtils;
         $this->passwordEncoder = $passwordEncoder;

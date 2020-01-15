@@ -23,11 +23,7 @@ class RefreshTokenAuthenticator extends AbstractGuardAuthenticator
     private $refreshTokenManager;
     private $accessTokenManager;
 
-    public function __construct(
-        ViewHandlerInterface $viewHandler,
-        TokenExtractorInterface $tokenExtractor,
-        RefreshTokenManager $refreshTokenManager,
-        AccessTokenManager $accessTokenManager)
+    public function __construct(ViewHandlerInterface $viewHandler, TokenExtractorInterface $tokenExtractor, RefreshTokenManager $refreshTokenManager, AccessTokenManager $accessTokenManager)
     {
         $this->viewHandler = $viewHandler;
         $this->tokenExtractor = $tokenExtractor;

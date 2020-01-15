@@ -21,10 +21,7 @@ class ApiAuthenticator extends AbstractGuardAuthenticator
     private $tokenExtractor;
     private $jwtManager;
 
-    public function __construct(
-        ViewHandlerInterface $viewHandler,
-        TokenExtractorInterface $tokenExtractor,
-        JWTManager $jwtManager)
+    public function __construct(ViewHandlerInterface $viewHandler, TokenExtractorInterface $tokenExtractor, JWTManager $jwtManager)
     {
         $this->viewHandler = $viewHandler;
         $this->tokenExtractor = $tokenExtractor;
