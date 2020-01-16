@@ -14,8 +14,6 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class UserCreateCommand extends Command
 {
-    const DEFAULT_AVATAR = 'http://placehold.it/320x320';
-
     protected static $defaultName = 'app:user:create';
 
     private $validator;
@@ -50,7 +48,7 @@ class UserCreateCommand extends Command
         $user = new User();
         $user->setUsername($username);
         $user->setPassword($password);
-        $user->setAvatar(self::DEFAULT_AVATAR);
+        $user->setAvatar('http://placehold.it/320x320');
         $user->setCreatedAt(new \DateTimeImmutable());
 
         $errors = $this->validator->validate($user, null, ['username', 'password']);
