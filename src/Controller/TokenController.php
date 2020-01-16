@@ -41,7 +41,7 @@ class TokenController extends AbstractFOSRestController
      * @apiGroup Token
      * @apiVersion 0.1.0
      *
-     * @apiHeader {String} Authorization 刷新令牌，使用 <code>Bearer {refresh_token}</code> 格式
+     * @apiParam (Body) {String} refresh_token 刷新令牌
      *
      * @apiUse TokenModel
      */
