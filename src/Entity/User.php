@@ -3,11 +3,15 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
+ *
+ * @UniqueEntity(groups={"username"}, fields={"username"})
  */
 class User implements UserInterface
 {
@@ -24,11 +28,19 @@ class User implements UserInterface
      * @ORM\Column(type="string", unique=true)
      *
      * @Groups({"user"})
+     *
+     * @Assert\NotBlank(groups={"username"})
+     * @Assert\Regex(groups={"username"}, pattern="/^[a-zA-Z0-9_]+$/")
+     * @Assert\Length(groups={"username"}, min=4, max=16)
      */
     private $username;
 
     /**
      * @ORM\Column(type="string")
+     *
+     * @Assert\NotBlank(groups={"password"})
+     * @Assert\Regex(groups={"password"}, pattern="/^[a-zA-Z0-9_\.\@]+$/")
+     * @Assert\Length(groups={"password"}, min=6, max=16)
      */
     private $password;
 

@@ -28,7 +28,7 @@ class RefreshTokenDestroyCommand extends Command
     protected function configure()
     {
         $this
-            ->setDescription('销毁指定用户的刷新令牌，该功能用于令牌被盗、用户重置密码等功能')
+            ->setDescription('销毁用户的刷新令牌，该功能用于令牌被盗、密码重置等场景')
             ->addArgument('username', InputArgument::REQUIRED, '用户名（唯一标识）')
         ;
     }
@@ -55,7 +55,7 @@ class RefreshTokenDestroyCommand extends Command
             return 1;
         }
 
-        $io->success(sprintf('用户 "%s" 令牌已销毁成功', $username));
+        $io->success(sprintf('用户 "%s" 刷新令牌已销毁成功！', $username));
 
         return 0;
     }
