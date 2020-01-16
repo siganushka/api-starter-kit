@@ -4,7 +4,6 @@ namespace App\Security\Authenticator;
 
 use App\JWT\AccessTokenManager;
 use App\JWT\RefreshTokenManager;
-use App\TokenExtractor\TokenExtractorInterface;
 use FOS\RestBundle\View\View;
 use FOS\RestBundle\View\ViewHandlerInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -15,30 +14,47 @@ use Symfony\Component\Security\Core\Exception\CustomUserMessageAuthenticationExc
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 use Symfony\Component\Security\Guard\AbstractGuardAuthenticator;
+use Symfony\Component\Security\Http\HttpUtils;
+use Symfony\Component\Security\Http\ParameterBagUtils;
 
 class RefreshTokenAuthenticator extends AbstractGuardAuthenticator
 {
+    private $httpUtils;
     private $viewHandler;
-    private $tokenExtractor;
     private $refreshTokenManager;
     private $accessTokenManager;
+    private $options;
 
-    public function __construct(ViewHandlerInterface $viewHandler, TokenExtractorInterface $tokenExtractor, RefreshTokenManager $refreshTokenManager, AccessTokenManager $accessTokenManager)
+    public function __construct(HttpUtils $httpUtils, ViewHandlerInterface $viewHandler, RefreshTokenManager $refreshTokenManager, AccessTokenManager $accessTokenManager, array $options = [])
     {
+        $this->httpUtils = $httpUtils;
         $this->viewHandler = $viewHandler;
-        $this->tokenExtractor = $tokenExtractor;
         $this->refreshTokenManager = $refreshTokenManager;
         $this->accessTokenManager = $accessTokenManager;
+        $this->options = array_merge([
+            'refresh_token' => 'refresh_token',
+            'check_path' => 'api_refresh_token',
+        ], $options);
     }
 
     public function supports(Request $request)
     {
-        return null !== $this->tokenExtractor->extract($request);
+        return $this->httpUtils->checkRequestPath($request, $this->options['check_path']);
     }
 
     public function getCredentials(Request $request)
     {
-        return $this->tokenExtractor->extract($request);
+        $refreshToken = ParameterBagUtils::getParameterBagValue($request->request, $this->options['refresh_token']);
+
+        if (null === $refreshToken) {
+            throw new CustomUserMessageAuthenticationException(sprintf('The "%s" can not be empty.', $this->options['refresh_token']));
+        }
+
+        if (!\is_string($refreshToken)) {
+            throw new CustomUserMessageAuthenticationException(sprintf('The "%s" must be a string.', $this->options['refresh_token']));
+        }
+
+        return $refreshToken;
     }
 
     public function getUser($credentials, UserProviderInterface $userProvider)
@@ -64,7 +80,7 @@ class RefreshTokenAuthenticator extends AbstractGuardAuthenticator
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception)
     {
         $view = View::create([
-            'code' => Response::HTTP_UNAUTHORIZED,
+            'code' => Response::HTTP_BAD_REQUEST,
             'message' => strtr($exception->getMessageKey(), $exception->getMessageData()),
         ]);
 
@@ -83,7 +99,7 @@ class RefreshTokenAuthenticator extends AbstractGuardAuthenticator
     public function start(Request $request, AuthenticationException $authException = null)
     {
         $view = View::create([
-            'code' => Response::HTTP_UNAUTHORIZED,
+            'code' => Response::HTTP_BAD_REQUEST,
             'message' => 'Refresh Token not found.',
         ]);
 

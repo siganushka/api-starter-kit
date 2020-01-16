@@ -1,4 +1,3 @@
 controllers:
     resource: ../../src/Controller/
-    prefix: /v1
     type: annotation

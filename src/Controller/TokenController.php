@@ -4,7 +4,6 @@ namespace App\Controller;
 
 use FOS\RestBundle\Controller\AbstractFOSRestController;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * @apiDefine TokenModel
@@ -19,7 +18,7 @@ class TokenController extends AbstractFOSRestController
     /**
      * @Route("/access_token", name="api_access_token", methods={"POST"})
      *
-     * @api {post} /access_token 获取认证令牌
+     * @api {post} /access_token 1、获取认证令牌
      *
      * @apiGroup Token
      * @apiVersion 0.1.0
@@ -37,7 +36,7 @@ class TokenController extends AbstractFOSRestController
     /**
      * @Route("/refresh_token", name="api_refresh_token", methods={"POST"})
      *
-     * @api {post} /refresh_token 刷新认证令牌
+     * @api {post} /refresh_token 2、刷新认证令牌
      *
      * @apiGroup Token
      * @apiVersion 0.1.0
@@ -49,44 +48,5 @@ class TokenController extends AbstractFOSRestController
     public function refreshToken()
     {
         // controller can be blank: it will never be executed!
-    }
-
-    /**
-     * @Route("/private_area", name="api_private_area", methods={"GET"})
-     *
-     * @return Response
-     */
-    public function privateArea(UserInterface $user)
-    {
-        $view = $this->view($user);
-
-        $context = $view->getContext();
-        $context->setSerializeNull(true);
-        $context->addGroup('user');
-
-        $view->setContext($context);
-
-        return $view;
-    }
-
-    /**
-     * @Route("/public_area", name="api_public_area", methods={"GET"})
-     *
-     * @return Response
-     */
-    public function publicArea()
-    {
-        $view = $this->view(['success' => 'Hello World']);
-
-        $context = $view->getContext();
-        $context->setAttribute('xml_root_node_name', 'xml');
-        $context->setAttribute('xml_encoding', 'UTF-8');
-        $context->setAttribute('xml_format_output', false);
-        $context->setAttribute('xml_standalone', false);
-        $context->setAttribute('xml_version', '1.0');
-
-        $view->setContext($context);
-
-        return $view;
     }
 }

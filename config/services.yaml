@@ -46,9 +46,6 @@ services:
     App\Security\Authenticator\ApiAuthenticator:
         $tokenExtractor: '@App\TokenExtractor\ChainExtractor'
 
-    App\Security\Authenticator\RefreshTokenAuthenticator:
-        $tokenExtractor: '@App\TokenExtractor\ChainExtractor'
-
     App\JWT\JWTManager:
         $secret: '%env(resolve:APP_SECRET)%'
         $ttl: '%access_token_ttl%'

@@ -5,5 +5,4 @@ fos_rest:
         view_response_listener:  true
     format_listener:
         rules:
-            - { path: ^/v1, prefer_extension: true, fallback_format: json, priorities: [ json, xml ] }
-            - { path: ^/,   prefer_extension: true, fallback_format: html }
+            - { path: ^/, prefer_extension: true, fallback_format: json, priorities: [ json, xml ] }

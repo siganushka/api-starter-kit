@@ -16,7 +16,7 @@ security:
             security: false
 
         refresh_token:
-            pattern: ^/v1/refresh_token
+            pattern: ^/refresh_token
             stateless: true
             anonymous: lazy
             guard:
@@ -24,7 +24,7 @@ security:
                     - App\Security\Authenticator\RefreshTokenAuthenticator
 
         access_token:
-            pattern: ^/v1/access_token
+            pattern: ^/access_token
             stateless: true
             anonymous: lazy
             guard:
@@ -32,7 +32,7 @@ security:
                     - App\Security\Authenticator\AccessTokenAuthenticator
 
         main:
-            pattern: ^/v1
+            pattern: ^/
             stateless: true
             anonymous: lazy
             guard:
@@ -40,5 +40,4 @@ security:
                     - App\Security\Authenticator\ApiAuthenticator
 
     access_control:
-        - { path: ^/v1/public_area,     roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/v1,                 roles: IS_AUTHENTICATED_FULLY }
+        - { path: ^/, roles: IS_AUTHENTICATED_FULLY }
