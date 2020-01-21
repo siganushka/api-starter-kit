@@ -26,7 +26,7 @@ class InitCommand extends Command
     {
         $this
             ->setDescription('初始化项目，用于初次部署')
-            ->addOption('primary_key_start', null, InputOption::VALUE_REQUIRED, '主键起始值', 65536)
+            ->addOption('primary_key_start', null, InputOption::VALUE_REQUIRED, '主键起始值', 1024)
         ;
     }
 
