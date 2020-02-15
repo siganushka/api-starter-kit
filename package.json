@@ -1,6 +1,6 @@
 {
   "devDependencies": {
-    "apidoc": "^0.19.1"
+    "apidoc": "^0.20.0"
   },
   "apidoc": {
     "title": "接口文档",
