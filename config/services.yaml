@@ -43,14 +43,14 @@ services:
             - ['addExtractor', ['@App\TokenExtractor\AuthorizationHeaderExtractor']]
             - ['addExtractor', ['@App\TokenExtractor\QueryParameterExtractor']]
 
-    App\Security\Authenticator\ApiAuthenticator:
+    App\Security\Authenticator\APIAuthenticator:
         $tokenExtractor: '@App\TokenExtractor\ChainExtractor'
 
     App\JWT\JWTManager:
         $secret: '%env(resolve:APP_SECRET)%'
         $ttl: '%access_token_ttl%'
 
-    App\JWT\AccessTokenManager:
+    App\JWT\TokenManager:
         $ttl: '%access_token_ttl%'
 
     App\JWT\RefreshTokenManager:

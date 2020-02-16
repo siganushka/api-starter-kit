@@ -3,7 +3,7 @@
 namespace App\Security\Authenticator;
 
 use App\Error\Error;
-use App\JWT\AccessTokenManager;
+use App\JWT\TokenManager;
 use FOS\RestBundle\View\View;
 use FOS\RestBundle\View\ViewHandlerInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -18,24 +18,24 @@ use Symfony\Component\Security\Guard\AbstractGuardAuthenticator;
 use Symfony\Component\Security\Http\HttpUtils;
 use Symfony\Component\Security\Http\ParameterBagUtils;
 
-class AccessTokenAuthenticator extends AbstractGuardAuthenticator
+class TokenAuthenticator extends AbstractGuardAuthenticator
 {
     private $httpUtils;
     private $passwordEncoder;
     private $viewHandler;
-    private $accessTokenManager;
+    private $tokenManager;
     private $options;
 
-    public function __construct(HttpUtils $httpUtils, UserPasswordEncoderInterface $passwordEncoder, ViewHandlerInterface $viewHandler, AccessTokenManager $accessTokenManager, array $options = [])
+    public function __construct(HttpUtils $httpUtils, UserPasswordEncoderInterface $passwordEncoder, ViewHandlerInterface $viewHandler, TokenManager $tokenManager, array $options = [])
     {
         $this->httpUtils = $httpUtils;
         $this->passwordEncoder = $passwordEncoder;
         $this->viewHandler = $viewHandler;
-        $this->accessTokenManager = $accessTokenManager;
+        $this->tokenManager = $tokenManager;
         $this->options = array_merge([
             'username_path' => 'username',
             'password_path' => 'password',
-            'check_path' => 'api_access_token',
+            'check_path' => 'api_token',
         ], $options);
     }
 
@@ -89,9 +89,9 @@ class AccessTokenAuthenticator extends AbstractGuardAuthenticator
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey)
     {
-        $accessToken = $this->accessTokenManager->create($token->getUser());
+        $token = $this->tokenManager->create($token->getUser());
 
-        $view = View::create($accessToken);
+        $view = View::create($token);
 
         return $this->viewHandler->handle($view);
     }

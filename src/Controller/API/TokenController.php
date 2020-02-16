@@ -11,14 +11,14 @@ use Symfony\Component\Routing\Annotation\Route;
  * @apiSuccess (Success 200) {String} access_token 访问令牌，需要客户端保存
  * @apiSuccess (Success 200) {String} token_type 令牌类型，暂时仅支持 <code>Bearer</code>
  * @apiSuccess (Success 200) {String} expires_in 访问令牌有效期，过期后需要客户端主动刷新
- * @apiSuccess (Success 200) {String} refresh_token 刷新令牌，需要客户端保存，有效期固定 30 天
+ * @apiSuccess (Success 200) {String} refresh_token 刷新令牌，需要客户端保存，有效期固定 1 个月
  */
 class TokenController extends AbstractFOSRestController
 {
     /**
-     * @Route("/access_token", name="api_access_token", methods={"POST"})
+     * @Route("/token", name="api_token", methods={"POST"})
      *
-     * @api {post} /access_token 1、获取认证令牌
+     * @api {post} /token 1、获取认证令牌
      *
      * @apiGroup Token
      * @apiVersion 0.1.0
@@ -28,7 +28,7 @@ class TokenController extends AbstractFOSRestController
      *
      * @apiUse TokenModel
      */
-    public function accessToken()
+    public function token()
     {
         // controller can be blank: it will never be executed!
     }

@@ -23,13 +23,13 @@ security:
                 authenticators:
                     - App\Security\Authenticator\RefreshTokenAuthenticator
 
-        access_token:
-            pattern: ^/api/access_token
+        token:
+            pattern: ^/api/token
             stateless: true
             anonymous: lazy
             guard:
                 authenticators:
-                    - App\Security\Authenticator\AccessTokenAuthenticator
+                    - App\Security\Authenticator\TokenAuthenticator
 
         main:
             pattern: ^/api
@@ -37,7 +37,7 @@ security:
             anonymous: lazy
             guard:
                 authenticators:
-                    - App\Security\Authenticator\ApiAuthenticator
+                    - App\Security\Authenticator\APIAuthenticator
 
     access_control:
         - { path: ^/api, roles: IS_AUTHENTICATED_FULLY }

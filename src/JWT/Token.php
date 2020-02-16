@@ -2,7 +2,7 @@
 
 namespace App\JWT;
 
-class AccessToken
+class Token
 {
     /**
      * 接口调用令牌.

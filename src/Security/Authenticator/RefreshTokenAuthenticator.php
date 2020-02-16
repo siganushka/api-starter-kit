@@ -3,8 +3,8 @@
 namespace App\Security\Authenticator;
 
 use App\Error\Error;
-use App\JWT\AccessTokenManager;
 use App\JWT\RefreshTokenManager;
+use App\JWT\TokenManager;
 use FOS\RestBundle\View\View;
 use FOS\RestBundle\View\ViewHandlerInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -22,16 +22,16 @@ class RefreshTokenAuthenticator extends AbstractGuardAuthenticator
 {
     private $httpUtils;
     private $viewHandler;
+    private $tokenManager;
     private $refreshTokenManager;
-    private $accessTokenManager;
     private $options;
 
-    public function __construct(HttpUtils $httpUtils, ViewHandlerInterface $viewHandler, RefreshTokenManager $refreshTokenManager, AccessTokenManager $accessTokenManager, array $options = [])
+    public function __construct(HttpUtils $httpUtils, ViewHandlerInterface $viewHandler, TokenManager $tokenManager, RefreshTokenManager $refreshTokenManager, array $options = [])
     {
         $this->httpUtils = $httpUtils;
         $this->viewHandler = $viewHandler;
+        $this->tokenManager = $tokenManager;
         $this->refreshTokenManager = $refreshTokenManager;
-        $this->accessTokenManager = $accessTokenManager;
         $this->options = array_merge([
             'refresh_token' => 'refresh_token',
             'check_path' => 'api_refresh_token',
@@ -89,9 +89,9 @@ class RefreshTokenAuthenticator extends AbstractGuardAuthenticator
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey)
     {
-        $accessToken = $this->accessTokenManager->create($token->getUser());
+        $token = $this->tokenManager->create($token->getUser());
 
-        $view = View::create($accessToken);
+        $view = View::create($token);
 
         return $this->viewHandler->handle($view);
     }

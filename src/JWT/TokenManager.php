@@ -4,7 +4,7 @@ namespace App\JWT;
 
 use Symfony\Component\Security\Core\User\UserInterface;
 
-class AccessTokenManager
+class TokenManager
 {
     private $jwtManager;
     private $refreshTokenManager;
@@ -17,7 +17,7 @@ class AccessTokenManager
         $this->ttl = $ttl;
     }
 
-    public function create(UserInterface $user): AccessToken
+    public function create(UserInterface $user): Token
     {
         $payload = [
             // 'roles' => $user->getRoles(),
@@ -27,11 +27,11 @@ class AccessTokenManager
         $refreshToken = $this->refreshTokenManager->update($user);
         $jwt = $this->jwtManager->create($payload);
 
-        $accessToken = new AccessToken();
-        $accessToken->setAccessToken($jwt);
-        $accessToken->setRefreshToken($refreshToken);
-        $accessToken->setExpiresIn($this->ttl);
+        $token = new Token();
+        $token->setAccessToken($jwt);
+        $token->setRefreshToken($refreshToken);
+        $token->setExpiresIn($this->ttl);
 
-        return $accessToken;
+        return $token;
     }
 }
