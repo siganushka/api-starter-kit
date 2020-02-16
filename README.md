@@ -1,48 +1,57 @@
-# How to install ?
+# 如何安装？
 
-### Clone && Configuration
+### 克隆项目
 
-```php
+```shell
 $ git clone https://github.com/siganushka/api-starter-kit.git
 $ cd ./api-starter-kit
-$ cp .env .env.local
 ```
 
-> configuration ``.env.local``
+### 配置参数
 
-```php
-DATABASE_URL=mysql://db_user:db_password@127.0.0.1:3306/db_name
+```shell
+$ composer dump-env {ENV} # ENV 为当前环境，可选为 dev, test, prod
 ```
 
-### Install dependencies
+> 打开 ``.env.local.php`` 文件修改项目所需参数，比如数据库信息
 
-```php
+### 安装项目
+
+```shell
 $ composer install
 ```
 
-### Create database && Table && Fixtures
+### 创建数据库
 
-```php
-$ php bin/console doctrine:database:create
-$ php bin/console doctrine:schema:update --force
-$ php bin/console doctrine:fixtures:load
+```shell
+$ php bin/console doctrine:database:create # 创建数据库
+$ php bin/console doctrine:schema:update --force # 创建表结构
+$ php bin/console doctrine:fixtures:load # 生成测试数据（可选）
 ```
 
-### Install && Compress front-end dependencies
+### 前端依赖
 
-```php
-$ yarn install
-$ yarn encore production
+```shell
+$ yarn install # 安装前端依赖
+$ yarn encore production # 打包压缩前端依赖（javascript, css, img...）
 ```
 
-### Unit test
+### 单元测试
 
-```php
-$ php bin/phpunit --debug
+```shell
+$ cp .env.test .env.test.local # 复制测试本地环境变量
 ```
 
-### Generate API doc
+> 打开 ``.env.test.local`` 文件修改测试所需参数
 
-```php
+```shell
+$ php bin/phpunit --debug # 执行单元测试
+```
+
+### 生成接口文档
+
+```shell
 $ ./node_modules/.bin/apidoc -i ./src/Controller/ -o ./public/apidoc
 ```
+
+> 打开  ``http://{HOST}/apidoc/index.html`` 查看接口文档
