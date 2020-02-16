@@ -2,6 +2,7 @@
 
 namespace App\Security\Authenticator;
 
+use App\Error\Error;
 use App\JWT\AccessTokenManager;
 use App\JWT\RefreshTokenManager;
 use FOS\RestBundle\View\View;
@@ -47,11 +48,11 @@ class RefreshTokenAuthenticator extends AbstractGuardAuthenticator
         $refreshToken = ParameterBagUtils::getParameterBagValue($request->request, $this->options['refresh_token']);
 
         if (null === $refreshToken) {
-            throw new CustomUserMessageAuthenticationException(sprintf('The "%s" can not be empty.', $this->options['refresh_token']));
+            throw new CustomUserMessageAuthenticationException(sprintf('The "%s" can not be empty', $this->options['refresh_token']));
         }
 
         if (!\is_string($refreshToken)) {
-            throw new CustomUserMessageAuthenticationException(sprintf('The "%s" must be a string.', $this->options['refresh_token']));
+            throw new CustomUserMessageAuthenticationException(sprintf('The "%s" must be a string', $this->options['refresh_token']));
         }
 
         return $refreshToken;
@@ -66,7 +67,7 @@ class RefreshTokenAuthenticator extends AbstractGuardAuthenticator
         }
 
         if ($user->isRefreshTokenExpired()) {
-            throw new CustomUserMessageAuthenticationException('Expired Refresh Token');
+            throw new CustomUserMessageAuthenticationException('Expired refresh Token');
         }
 
         return $user;
@@ -79,10 +80,9 @@ class RefreshTokenAuthenticator extends AbstractGuardAuthenticator
 
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception)
     {
-        $view = View::create([
-            'code' => Response::HTTP_BAD_REQUEST,
-            'message' => strtr($exception->getMessageKey(), $exception->getMessageData()),
-        ]);
+        $error = new Error(Response::HTTP_UNAUTHORIZED, $exception->getMessageKey());
+
+        $view = View::create($error, $error->getStatus());
 
         return $this->viewHandler->handle($view);
     }
@@ -98,10 +98,9 @@ class RefreshTokenAuthenticator extends AbstractGuardAuthenticator
 
     public function start(Request $request, AuthenticationException $authException = null)
     {
-        $view = View::create([
-            'code' => Response::HTTP_BAD_REQUEST,
-            'message' => 'Refresh Token not found.',
-        ]);
+        $error = new Error(Response::HTTP_UNAUTHORIZED, 'Refresh Token not found');
+
+        $view = View::create($error, $error->getStatus());
 
         return $this->viewHandler->handle($view);
     }

@@ -1,7 +1,11 @@
 fos_rest:
+    service:
+        templating: null # deprecated warning
     serializer:
         serialize_null: true
     view:
+        default_engine: null # deprecated warning
+        force_redirects: [] # deprecated warning
         view_response_listener:  true
     format_listener:
         rules:

@@ -2,6 +2,7 @@
 
 namespace App\Security\Authenticator;
 
+use App\Error\Error;
 use App\JWT\AccessTokenManager;
 use FOS\RestBundle\View\View;
 use FOS\RestBundle\View\ViewHandlerInterface;
@@ -79,10 +80,9 @@ class AccessTokenAuthenticator extends AbstractGuardAuthenticator
 
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception)
     {
-        $view = View::create([
-            'code' => Response::HTTP_UNAUTHORIZED,
-            'message' => strtr($exception->getMessageKey(), $exception->getMessageData()),
-        ]);
+        $error = new Error(Response::HTTP_UNAUTHORIZED, $exception->getMessageKey());
+
+        $view = View::create($error, $error->getStatus());
 
         return $this->viewHandler->handle($view);
     }
@@ -98,10 +98,9 @@ class AccessTokenAuthenticator extends AbstractGuardAuthenticator
 
     public function start(Request $request, AuthenticationException $authException = null)
     {
-        $view = View::create([
-            'code' => Response::HTTP_UNAUTHORIZED,
-            'message' => 'Login Required.',
-        ]);
+        $error = new Error(Response::HTTP_UNAUTHORIZED, 'Login Required.');
+
+        $view = View::create($error, $error->getStatus());
 
         return $this->viewHandler->handle($view);
     }

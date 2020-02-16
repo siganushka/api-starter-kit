@@ -2,6 +2,7 @@
 
 namespace App\Security\Authenticator;
 
+use App\Error\Error;
 use App\JWT\JWTManager;
 use App\TokenExtractor\TokenExtractorInterface;
 use FOS\RestBundle\View\View;
@@ -49,7 +50,7 @@ class ApiAuthenticator extends AbstractGuardAuthenticator
         try {
             $user = $userProvider->loadUserByUsername($jwt->getClaim('username'));
         } catch (\Throwable $th) {
-            throw new CustomUserMessageAuthenticationException("Invalid jwt token: {$credentials}");
+            throw new CustomUserMessageAuthenticationException('Invalid Token');
         }
 
         return $user;
@@ -62,10 +63,9 @@ class ApiAuthenticator extends AbstractGuardAuthenticator
 
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception)
     {
-        $view = View::create([
-            'code' => Response::HTTP_UNAUTHORIZED,
-            'message' => strtr($exception->getMessageKey(), $exception->getMessageData()),
-        ]);
+        $error = new Error(Response::HTTP_UNAUTHORIZED, $exception->getMessageKey());
+
+        $view = View::create($error, $error->getStatus());
 
         return $this->viewHandler->handle($view);
     }
@@ -77,10 +77,9 @@ class ApiAuthenticator extends AbstractGuardAuthenticator
 
     public function start(Request $request, AuthenticationException $authException = null)
     {
-        $view = View::create([
-            'code' => Response::HTTP_UNAUTHORIZED,
-            'message' => 'JWT Token not found.',
-        ]);
+        $error = new Error(Response::HTTP_UNAUTHORIZED, 'Token not found.');
+
+        $view = View::create($error, $error->getStatus());
 
         return $this->viewHandler->handle($view);
     }

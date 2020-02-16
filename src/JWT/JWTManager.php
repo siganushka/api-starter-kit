@@ -52,11 +52,11 @@ class JWTManager
 
         $isValid = $token->verify($this->signer, $this->secret);
         if (!$isValid) {
-            throw new \RuntimeException('Invalid JWT Token');
+            throw new \RuntimeException('Invalid Token');
         }
 
         if ($token->isExpired()) {
-            throw new \RuntimeException('Expired JWT Token');
+            throw new \RuntimeException('Expired Token');
         }
 
         return $token;
