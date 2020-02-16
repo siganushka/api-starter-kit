@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "f85ed8e6e14eb92e72d8d496b3eb92b1",
+    "content-hash": "401f5edc8c4786849c4a3b3bf50c8fe1",
     "packages": [
         {
             "name": "doctrine/annotations",
@@ -1527,6 +1527,45 @@
                 "psr-3"
             ],
             "time": "2019-11-01T11:05:21+00:00"
+        },
+        {
+            "name": "siganushka/generic-bundle",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/siganushka/generic-bundle.git",
+                "reference": "9b4e8b1320068f64b91da5015fb2861fedcd4a3e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://github-api-proxy.cnpkg.org/repos/siganushka/generic-bundle/zipball/9b4e8b1320068f64b91da5015fb2861fedcd4a3e",
+                "reference": "9b4e8b1320068f64b91da5015fb2861fedcd4a3e",
+                "shasum": ""
+            },
+            "require-dev": {
+                "doctrine/orm": "^2.7",
+                "symfony/framework-bundle": "^3.4|^4.0|^5.0",
+                "symfony/twig-bundle": "^3.4|^4.0|^5.0",
+                "symfony/validator": "^3.4|^4.0|^5.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Siganushka\\GenericBundle\\": "src/"
+                }
+            },
+            "notification-url": "https://repo.packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "siganushka",
+                    "email": "siganushka@gmail.com"
+                }
+            ],
+            "description": "Generic bundle for symfony",
+            "time": "2020-02-16T11:07:11+00:00"
         },
         {
             "name": "symfony/cache",
@@ -4502,7 +4541,8 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
-        "friendsofsymfony/rest-bundle": 20
+        "friendsofsymfony/rest-bundle": 20,
+        "siganushka/generic-bundle": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,

@@ -9,6 +9,7 @@
         "doctrine/orm": "^2.7",
         "friendsofsymfony/rest-bundle": "dev-master",
         "lcobucci/jwt": "^3.3",
+        "siganushka/generic-bundle": "dev-master",
         "symfony/console": "5.0.*",
         "symfony/dotenv": "5.0.*",
         "symfony/flex": "^1.3.1",
@@ -68,6 +69,12 @@
         "symfony": {
             "allow-contrib": false,
             "require": "5.0.*"
+        }
+    },
+    "repositories": {
+        "packagist": {
+            "type": "composer",
+            "url": "https://php.cnpkg.org"
         }
     }
 }

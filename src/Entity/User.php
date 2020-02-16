@@ -3,6 +3,12 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Siganushka\GenericBundle\Model\EnableInterface;
+use Siganushka\GenericBundle\Model\EnableTrait;
+use Siganushka\GenericBundle\Model\ResourceInterface;
+use Siganushka\GenericBundle\Model\ResourceTrait;
+use Siganushka\GenericBundle\Model\TimestampableInterface;
+use Siganushka\GenericBundle\Model\TimestampableTrait;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
@@ -13,16 +19,11 @@ use Symfony\Component\Validator\Constraints as Assert;
  *
  * @UniqueEntity(groups={"username"}, fields={"username"})
  */
-class User implements UserInterface
+class User implements ResourceInterface, EnableInterface, TimestampableInterface, UserInterface
 {
-    /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
-     *
-     * @Groups({"user"})
-     */
-    private $id;
+    use ResourceTrait;
+    use EnableTrait;
+    use TimestampableTrait;
 
     /**
      * @ORM\Column(type="string", unique=true)
@@ -64,25 +65,6 @@ class User implements UserInterface
      * @Groups({"user_refresh_token"})
      */
     private $refreshTokenExpireAt;
-
-    /**
-     * @ORM\Column(type="datetime", nullable=true)
-     *
-     * @Groups({"user"})
-     */
-    private $updatedAt;
-
-    /**
-     * @ORM\Column(type="datetime_immutable")
-     *
-     * @Groups({"user"})
-     */
-    private $createdAt;
-
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
 
     public function getUsername(): string
     {
@@ -151,30 +133,6 @@ class User implements UserInterface
         }
 
         return (new \DateTime()) > $this->refreshTokenExpireAt;
-    }
-
-    public function getUpdatedAt(): ?\DateTimeInterface
-    {
-        return $this->updatedAt;
-    }
-
-    public function setUpdatedAt(?\DateTimeInterface $updatedAt): self
-    {
-        $this->updatedAt = $updatedAt;
-
-        return $this;
-    }
-
-    public function getCreatedAt(): ?\DateTimeImmutable
-    {
-        return $this->createdAt;
-    }
-
-    public function setCreatedAt(\DateTimeImmutable $createdAt): self
-    {
-        $this->createdAt = $createdAt;
-
-        return $this;
     }
 
     public function getRoles(): array
