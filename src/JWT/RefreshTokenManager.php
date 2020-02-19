@@ -3,7 +3,6 @@
 namespace App\JWT;
 
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\Security\Core\User\UserInterface;
 
 class RefreshTokenManager
 {
@@ -16,7 +15,7 @@ class RefreshTokenManager
         $this->ttl = $ttl;
     }
 
-    public function loadUserByRefreshToken(string $refreshToken): UserInterface
+    public function loadUserByRefreshToken(string $refreshToken): RefreshTokenUserInterface
     {
         $user = $this->entityManager->getRepository('App\Entity\User')
             ->findOneByRefreshToken($refreshToken);
@@ -28,26 +27,24 @@ class RefreshTokenManager
         return $user;
     }
 
-    public function update(UserInterface $user): string
+    public function update(RefreshTokenUserInterface $user): string
     {
         $refreshToken = password_hash(uniqid($user->getUsername()), PASSWORD_DEFAULT);
         $refreshToken = str_replace(['+', '/'], ['-', '_'], base64_encode($refreshToken));
 
-        $updatedAt = new \DateTimeImmutable();
-        $expiresAt = $updatedAt->modify(sprintf('+%d seconds', $this->ttl));
+        $datetime = new \DateTime();
+        $expireAt = $datetime->modify(sprintf('+%d seconds', $this->ttl));
 
-        $user->setUpdatedAt($updatedAt);
         $user->setRefreshToken($refreshToken);
-        $user->setRefreshTokenExpireAt($expiresAt);
+        $user->setRefreshTokenExpireAt($expireAt);
 
         $this->entityManager->flush();
 
         return $refreshToken;
     }
 
-    public function destroy(UserInterface $user): bool
+    public function destroy(RefreshTokenUserInterface $user): bool
     {
-        $user->setUpdatedAt(new \DateTime());
         $user->setRefreshToken(null);
         $user->setRefreshTokenExpireAt(null);
 

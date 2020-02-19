@@ -36,6 +36,7 @@ class UserController extends AbstractFOSRestController
 
         $context = $view->getContext();
         $context->setSerializeNull(true);
+        $context->setGroups(['resource', 'enable', 'timestampable']);
         $context->addGroup('user');
 
         $view->setContext($context);

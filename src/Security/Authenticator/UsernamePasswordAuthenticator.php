@@ -18,7 +18,7 @@ use Symfony\Component\Security\Guard\AbstractGuardAuthenticator;
 use Symfony\Component\Security\Http\HttpUtils;
 use Symfony\Component\Security\Http\ParameterBagUtils;
 
-class TokenAuthenticator extends AbstractGuardAuthenticator
+class UsernamePasswordAuthenticator extends AbstractGuardAuthenticator
 {
     private $httpUtils;
     private $passwordEncoder;

@@ -2,8 +2,6 @@
 
 namespace App\JWT;
 
-use Symfony\Component\Security\Core\User\UserInterface;
-
 class TokenManager
 {
     private $jwtManager;
@@ -17,7 +15,7 @@ class TokenManager
         $this->ttl = $ttl;
     }
 
-    public function create(UserInterface $user): Token
+    public function create(RefreshTokenUserInterface $user): Token
     {
         $payload = [
             // 'roles' => $user->getRoles(),

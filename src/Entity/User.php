@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\JWT\RefreshTokenUserInterface;
 use Doctrine\ORM\Mapping as ORM;
 use Siganushka\GenericBundle\Model\EnableInterface;
 use Siganushka\GenericBundle\Model\EnableTrait;
@@ -10,7 +11,6 @@ use Siganushka\GenericBundle\Model\ResourceTrait;
 use Siganushka\GenericBundle\Model\TimestampableInterface;
 use Siganushka\GenericBundle\Model\TimestampableTrait;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
-use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -19,7 +19,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *
  * @UniqueEntity(groups={"username"}, fields={"username"})
  */
-class User implements ResourceInterface, EnableInterface, TimestampableInterface, UserInterface
+class User implements ResourceInterface, EnableInterface, TimestampableInterface, RefreshTokenUserInterface
 {
     use ResourceTrait;
     use EnableTrait;
@@ -126,7 +126,7 @@ class User implements ResourceInterface, EnableInterface, TimestampableInterface
         return $this;
     }
 
-    public function isRefreshTokenExpired()
+    public function isRefreshTokenExpired(): bool
     {
         if (null === $this->refreshTokenExpireAt) {
             return true;

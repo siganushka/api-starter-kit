@@ -43,7 +43,7 @@ services:
             - ['addExtractor', ['@App\TokenExtractor\AuthorizationHeaderExtractor']]
             - ['addExtractor', ['@App\TokenExtractor\QueryParameterExtractor']]
 
-    App\Security\Authenticator\APIAuthenticator:
+    App\Security\Authenticator\JWTAuthenticator:
         $tokenExtractor: '@App\TokenExtractor\ChainExtractor'
 
     App\JWT\JWTManager:
