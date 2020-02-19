@@ -70,11 +70,5 @@
             "allow-contrib": false,
             "require": "5.0.*"
         }
-    },
-    "repositories": {
-        "packagist": {
-            "type": "composer",
-            "url": "https://php.cnpkg.org"
-        }
     }
 }
