@@ -33,7 +33,7 @@ class RefreshTokenAuthenticator extends AbstractGuardAuthenticator
         $this->tokenManager = $tokenManager;
         $this->refreshTokenManager = $refreshTokenManager;
         $this->options = array_merge([
-            'refresh_token' => 'refresh_token',
+            'refresh_token' => 'refreshToken',
             'check_path' => 'api_refresh_token',
         ], $options);
     }
@@ -98,7 +98,11 @@ class RefreshTokenAuthenticator extends AbstractGuardAuthenticator
 
     public function start(Request $request, AuthenticationException $authException = null)
     {
-        $error = new Error(Response::HTTP_UNAUTHORIZED, 'Refresh Token not found');
+        $message = ($authException instanceof AuthenticationException)
+            ? strtr($authException->getMessageKey(), $authException->getMessageData())
+            : 'Refresh Token not found';
+
+        $error = new Error(Response::HTTP_UNAUTHORIZED, $message);
 
         $view = View::create($error, $error->getStatus());
 

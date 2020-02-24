@@ -77,7 +77,11 @@ class JWTAuthenticator extends AbstractGuardAuthenticator
 
     public function start(Request $request, AuthenticationException $authException = null)
     {
-        $error = new Error(Response::HTTP_UNAUTHORIZED, 'Token not found.');
+        $message = ($authException instanceof AuthenticationException)
+            ? strtr($authException->getMessageKey(), $authException->getMessageData())
+            : 'Token not found.';
+
+        $error = new Error(Response::HTTP_UNAUTHORIZED, $message);
 
         $view = View::create($error, $error->getStatus());
 

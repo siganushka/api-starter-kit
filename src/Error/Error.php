@@ -35,6 +35,13 @@ class Error
      */
     private $detail;
 
+    /**
+     * The invalid params for post request.
+     *
+     * @var array
+     */
+    private $invalidParams = [];
+
     public function __construct(int $status, string $detail)
     {
         $this->setStatus($status);
@@ -85,6 +92,18 @@ class Error
     public function setDetail(string $detail): self
     {
         $this->detail = $detail;
+
+        return $this;
+    }
+
+    public function getInvalidParams(): array
+    {
+        return $this->invalidParams;
+    }
+
+    public function setInvalidParams(array $invalidParams): self
+    {
+        $this->invalidParams = $invalidParams;
 
         return $this;
     }

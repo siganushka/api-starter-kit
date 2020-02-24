@@ -55,3 +55,9 @@ services:
 
     App\JWT\RefreshTokenManager:
         $ttl: '%refresh_token_ttl%'
+
+    App\Serializer\Normalizer\FormErrorNormalizer:
+        $nameConverter: '@serializer.name_converter.camel_case_to_snake_case'
+
+    App\Serializer\Normalizer\SymfonyCamelKeysNormalizer:
+        $nameConverter: '@serializer.name_converter.camel_case_to_snake_case'

@@ -7,6 +7,10 @@ fos_rest:
         default_engine: null # deprecated warning
         force_redirects: [] # deprecated warning
         view_response_listener:  true
+    body_listener:
+        array_normalizer:
+            service: App\Serializer\Normalizer\SymfonyCamelKeysNormalizer
+            forms: true
     format_listener:
         rules:
             - { path: ^/api, prefer_extension: true, fallback_format: json, priorities: [ json, xml ] }

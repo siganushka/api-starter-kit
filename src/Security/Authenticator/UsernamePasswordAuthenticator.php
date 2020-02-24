@@ -98,7 +98,11 @@ class UsernamePasswordAuthenticator extends AbstractGuardAuthenticator
 
     public function start(Request $request, AuthenticationException $authException = null)
     {
-        $error = new Error(Response::HTTP_UNAUTHORIZED, 'Login Required.');
+        $message = ($authException instanceof AuthenticationException)
+            ? strtr($authException->getMessageKey(), $authException->getMessageData())
+            : 'Login Required.';
+
+        $error = new Error(Response::HTTP_UNAUTHORIZED, $message);
 
         $view = View::create($error, $error->getStatus());
 

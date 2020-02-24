@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "6bf18da6ee5aed6569065c835ec9c072",
+    "content-hash": "0ecb6670c326f61c7db16032e971e89d",
     "packages": [
         {
             "name": "doctrine/annotations",
@@ -3785,6 +3785,83 @@
             "time": "2019-11-18T17:27:11+00:00"
         },
         {
+            "name": "symfony/translation",
+            "version": "v5.0.4",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/translation.git",
+                "reference": "28e1054f1ea26c63762d9260c37cb1056ea62dbb"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/translation/zipball/28e1054f1ea26c63762d9260c37cb1056ea62dbb",
+                "reference": "28e1054f1ea26c63762d9260c37cb1056ea62dbb",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.2.5",
+                "symfony/polyfill-mbstring": "~1.0",
+                "symfony/translation-contracts": "^2"
+            },
+            "conflict": {
+                "symfony/config": "<4.4",
+                "symfony/dependency-injection": "<5.0",
+                "symfony/http-kernel": "<5.0",
+                "symfony/twig-bundle": "<5.0",
+                "symfony/yaml": "<4.4"
+            },
+            "provide": {
+                "symfony/translation-implementation": "2.0"
+            },
+            "require-dev": {
+                "psr/log": "~1.0",
+                "symfony/config": "^4.4|^5.0",
+                "symfony/console": "^4.4|^5.0",
+                "symfony/dependency-injection": "^5.0",
+                "symfony/finder": "^4.4|^5.0",
+                "symfony/http-kernel": "^5.0",
+                "symfony/intl": "^4.4|^5.0",
+                "symfony/service-contracts": "^1.1.2|^2",
+                "symfony/yaml": "^4.4|^5.0"
+            },
+            "suggest": {
+                "psr/log-implementation": "To use logging capability in translator",
+                "symfony/config": "",
+                "symfony/yaml": ""
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "5.0-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Symfony\\Component\\Translation\\": ""
+                },
+                "exclude-from-classmap": [
+                    "/Tests/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
+                }
+            ],
+            "description": "Symfony Translation Component",
+            "homepage": "https://symfony.com",
+            "time": "2020-01-21T08:40:24+00:00"
+        },
+        {
             "name": "symfony/translation-contracts",
             "version": "v2.0.1",
             "source": {
@@ -4231,7 +4308,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github-api-proxy.cnpkg.org/repos/doctrine/data-fixtures/zipball/39e9777c9089351a468f780b01cffa3cb0a42907",
+                "url": "https://api.github.com/repos/doctrine/data-fixtures/zipball/39e9777c9089351a468f780b01cffa3cb0a42907",
                 "reference": "39e9777c9089351a468f780b01cffa3cb0a42907",
                 "shasum": ""
             },
@@ -4295,7 +4372,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github-api-proxy.cnpkg.org/repos/doctrine/DoctrineFixturesBundle/zipball/8f07fcfdac7f3591f3c4bf13a50cbae05f65ed70",
+                "url": "https://api.github.com/repos/doctrine/DoctrineFixturesBundle/zipball/8f07fcfdac7f3591f3c4bf13a50cbae05f65ed70",
                 "reference": "8f07fcfdac7f3591f3c4bf13a50cbae05f65ed70",
                 "shasum": ""
             },
@@ -4362,7 +4439,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github-api-proxy.cnpkg.org/repos/nikic/PHP-Parser/zipball/9a9981c347c5c49d6dfe5cf826bb882b824080dc",
+                "url": "https://api.github.com/repos/nikic/PHP-Parser/zipball/9a9981c347c5c49d6dfe5cf826bb882b824080dc",
                 "reference": "9a9981c347c5c49d6dfe5cf826bb882b824080dc",
                 "shasum": ""
             },
@@ -4414,7 +4491,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github-api-proxy.cnpkg.org/repos/symfony/maker-bundle/zipball/c864e7f9b8d1e1f5f60acc3beda11299f637aded",
+                "url": "https://api.github.com/repos/symfony/maker-bundle/zipball/c864e7f9b8d1e1f5f60acc3beda11299f637aded",
                 "reference": "c864e7f9b8d1e1f5f60acc3beda11299f637aded",
                 "shasum": ""
             },
@@ -4482,7 +4559,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github-api-proxy.cnpkg.org/repos/symfony/phpunit-bridge/zipball/38959f0ef4cea3e003f94c670bca89b2f4d932c5",
+                "url": "https://api.github.com/repos/symfony/phpunit-bridge/zipball/38959f0ef4cea3e003f94c670bca89b2f4d932c5",
                 "reference": "38959f0ef4cea3e003f94c670bca89b2f4d932c5",
                 "shasum": ""
             },
