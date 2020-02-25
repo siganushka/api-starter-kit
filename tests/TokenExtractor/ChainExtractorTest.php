@@ -3,8 +3,8 @@
 namespace App\Tests\TokenExtractor;
 
 use App\TokenExtractor\AuthorizationHeaderExtractor;
-use App\TokenExtractor\QueryParameterExtractor;
 use App\TokenExtractor\ChainExtractor;
+use App\TokenExtractor\QueryParameterExtractor;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\Request;
 

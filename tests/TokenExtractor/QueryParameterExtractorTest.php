@@ -18,11 +18,10 @@ class QueryParameterExtractorTest extends TestCase
         $this->assertEquals('foo_value', $extractor->extract($request1));
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
     public function testEmptyNameException()
     {
+        $this->expectException(\InvalidArgumentException::class);
+
         return new QueryParameterExtractor('');
     }
 }

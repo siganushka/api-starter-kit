@@ -4,40 +4,46 @@ namespace App\Tests\JWT;
 
 use App\Entity\User;
 use App\JWT\RefreshTokenManager;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class RefreshTokenManagerTest extends WebTestCase
 {
     public function testRefreshTokenManager()
     {
-        self::bootKernel();
+        $user = new User();
+        $user->setUsername('siganushka');
 
-        $entityManager = self::$container->get(EntityManagerInterface::class);
+        $refreshTokenManager = $this->createMock(RefreshTokenManager::class);
 
-        $user = $entityManager->getRepository(User::class)
-            ->findOneByUsername('siganushka');
+        $refreshTokenManager->expects($this->any())
+            ->method('update')
+            ->willReturn('mock_refresh_token');
 
-        if (!$user) {
-            $this->markTestSkipped('must be revisited.');
-        }
+        $refreshTokenManager->expects($this->any())
+            ->method('loadUserByRefreshToken')
+            ->willReturn($user);
 
-        $refreshTokenManager = self::$container->get(RefreshTokenManager::class);
+        $refreshTokenManager->expects($this->any())
+            ->method('destroy')
+            ->willReturn(true);
+
         $this->assertIsString($refreshToken = $refreshTokenManager->update($user));
-        $this->assertInstanceOf(User::class, $refreshTokenManager->loadUserByRefreshToken($refreshToken));
+        $this->assertInstanceOf(\get_class($user), $refreshTokenManager->loadUserByRefreshToken($refreshToken));
 
         $ret = $refreshTokenManager->destroy($user);
         $this->assertTrue($ret);
     }
 
-    /**
-     * @expectedException \RuntimeException
-     */
     public function testRefreshTokenNotFound()
     {
-        self::bootKernel();
+        $this->expectException(\RuntimeException::class);
 
-        $refreshTokenManager = self::$container->get(RefreshTokenManager::class);
+        $refreshTokenManager = $this->createMock(RefreshTokenManager::class);
+
+        $refreshTokenManager->expects($this->any())
+            ->method('loadUserByRefreshToken')
+            ->willThrowException(new \RuntimeException('Invalid refresh token'));
+
         $refreshTokenManager->loadUserByRefreshToken('not_exists_refresh_token');
     }
 }

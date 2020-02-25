@@ -27,11 +27,10 @@ class AuthorizationHeaderExtractorTest extends TestCase
         $this->assertEquals('bar_value', $extractorEmptyPrefix->extract($request3));
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
     public function testEmptyNameException()
     {
+        $this->expectException(\InvalidArgumentException::class);
+
         return new AuthorizationHeaderExtractor('');
     }
 }

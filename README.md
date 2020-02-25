@@ -39,12 +39,6 @@ $ yarn encore production # 打包压缩前端依赖（javascript, css, img...）
 ### 单元测试
 
 ```bash
-$ cp .env.test .env.test.local # 复制测试本地环境变量
-```
-
-> 打开 ``.env.test.local`` 文件修改测试所需参数
-
-```bash
 $ php bin/phpunit --debug # 执行单元测试
 ```
 

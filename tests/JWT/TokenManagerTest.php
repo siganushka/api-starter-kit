@@ -5,27 +5,26 @@ namespace App\Tests\JWT;
 use App\Entity\User;
 use App\JWT\Token;
 use App\JWT\TokenManager;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class TokenManagerTest extends WebTestCase
 {
     public function testTokenManager()
     {
-        self::bootKernel();
+        $user = new User();
+        $user->setUsername('siganushka');
 
-        self::bootKernel();
+        $token = new Token();
+        $token->setAccessToken('mock_access_token');
+        $token->setRefreshToken('mock_refresh_token');
+        $token->setExpiresIn(3600);
 
-        $entityManager = self::$container->get(EntityManagerInterface::class);
+        $tokenManager = $this->createMock(TokenManager::class);
 
-        $user = $entityManager->getRepository(User::class)
-            ->findOneByUsername('siganushka');
+        $tokenManager->expects($this->any())
+            ->method('create')
+            ->willReturn($token);
 
-        if (!$user) {
-            $this->markTestSkipped('must be revisited.');
-        }
-
-        $tokenManager = self::$container->get(TokenManager::class);
-        $this->assertInstanceOf(Token::class, $tokenManager->create($user));
+        $this->assertInstanceOf(\get_class($token), $tokenManager->create($user));
     }
 }
