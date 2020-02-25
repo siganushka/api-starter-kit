@@ -1005,12 +1005,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/FriendsOfSymfony/FOSRestBundle.git",
-                "reference": "aafb5f30856243200e657dab822ffaf82b41a4b4"
+                "reference": "3a58aeea211cd5d6c5707bbba1a88b4c325700e3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/FriendsOfSymfony/FOSRestBundle/zipball/aafb5f30856243200e657dab822ffaf82b41a4b4",
-                "reference": "aafb5f30856243200e657dab822ffaf82b41a4b4",
+                "url": "https://api.github.com/repos/FriendsOfSymfony/FOSRestBundle/zipball/3a58aeea211cd5d6c5707bbba1a88b4c325700e3",
+                "reference": "3a58aeea211cd5d6c5707bbba1a88b4c325700e3",
                 "shasum": ""
             },
             "require": {
@@ -1078,7 +1078,7 @@
                     "Tests/"
                 ]
             },
-            "notification-url": "https://repo.packagist.org/downloads/",
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -1101,7 +1101,7 @@
             "keywords": [
                 "rest"
             ],
-            "time": "2020-02-11T16:27:46+00:00"
+            "time": "2020-02-13T10:56:50+00:00"
         },
         {
             "name": "jdorn/sql-formatter",
@@ -1534,12 +1534,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/siganushka/generic-bundle.git",
-                "reference": "1738025b1931ce67a4a5dd51b3f65080d4c6c422"
+                "reference": "b6e77d4552de5357f2db8c7a9b852e632ff6f363"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/siganushka/generic-bundle/zipball/1738025b1931ce67a4a5dd51b3f65080d4c6c422",
-                "reference": "1738025b1931ce67a4a5dd51b3f65080d4c6c422",
+                "url": "https://api.github.com/repos/siganushka/generic-bundle/zipball/b6e77d4552de5357f2db8c7a9b852e632ff6f363",
+                "reference": "b6e77d4552de5357f2db8c7a9b852e632ff6f363",
                 "shasum": ""
             },
             "require-dev": {
@@ -1565,7 +1565,7 @@
                 }
             ],
             "description": "Generic bundle for symfony",
-            "time": "2020-02-19T12:16:04+00:00"
+            "time": "2020-02-22T06:01:45+00:00"
         },
         {
             "name": "symfony/cache",
