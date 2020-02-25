@@ -30,7 +30,10 @@ class FormErrorNormalizer implements NormalizerInterface, CacheableSupportsMetho
             }
         }
 
-        $error = new Error(Response::HTTP_UNPROCESSABLE_ENTITY, 'Unprocessable Entity.');
+        $status = Response::HTTP_UNPROCESSABLE_ENTITY;
+        $detail = Response::$statusTexts[$status];
+
+        $error = new Error($status, $detail);
         $error->setInvalidParams($invalidParams);
 
         return $this->errorNormalizer->normalize($error, $format, $context);
