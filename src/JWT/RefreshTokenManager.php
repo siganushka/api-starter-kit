@@ -21,7 +21,7 @@ class RefreshTokenManager
             ->findOneByRefreshToken($refreshToken);
 
         if (!$user) {
-            throw new \RuntimeException('Invalid refresh token');
+            throw new \RuntimeException('Invalid refresh token.');
         }
 
         return $user;

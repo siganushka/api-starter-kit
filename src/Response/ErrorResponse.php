@@ -1,11 +1,13 @@
 <?php
 
-namespace App\Error;
+namespace App\Response;
+
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * @see https://tools.ietf.org/html/rfc7807
  */
-class Error
+class ErrorResponse
 {
     /**
      * A URI reference that identifies the problem type.
@@ -19,7 +21,7 @@ class Error
      *
      * @var string
      */
-    private $title = 'An error occurred';
+    private $title;
 
     /**
      * The HTTP status code.
@@ -34,13 +36,6 @@ class Error
      * @var string
      */
     private $detail;
-
-    /**
-     * The invalid params for post request.
-     *
-     * @var array
-     */
-    private $invalidParams = [];
 
     public function __construct(int $status, string $detail)
     {
@@ -81,6 +76,12 @@ class Error
     {
         $this->status = $status;
 
+        $title = isset(Response::$statusTexts[$status])
+            ? Response::$statusTexts[$status]
+            : 'An error occurred';
+
+        $this->setTitle($title);
+
         return $this;
     }
 
@@ -92,18 +93,6 @@ class Error
     public function setDetail(string $detail): self
     {
         $this->detail = $detail;
-
-        return $this;
-    }
-
-    public function getInvalidParams(): array
-    {
-        return $this->invalidParams;
-    }
-
-    public function setInvalidParams(array $invalidParams): self
-    {
-        $this->invalidParams = $invalidParams;
 
         return $this;
     }

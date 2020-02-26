@@ -2,13 +2,12 @@
 
 namespace App\Security\Authenticator;
 
-use App\Error\Error;
 use App\JWT\JWTManager;
+use App\Response\ErrorResponse;
 use App\TokenExtractor\TokenExtractorInterface;
 use FOS\RestBundle\View\View;
 use FOS\RestBundle\View\ViewHandlerInterface;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\Exception\CustomUserMessageAuthenticationException;
@@ -44,13 +43,13 @@ class JWTAuthenticator extends AbstractGuardAuthenticator
         try {
             $jwt = $this->jwtManager->parse($credentials);
         } catch (\Throwable $th) {
-            throw new CustomUserMessageAuthenticationException($th->getMessage());
+            throw new CustomUserMessageAuthenticationException('Invalid token.');
         }
 
         try {
             $user = $userProvider->loadUserByUsername($jwt->getClaim('username'));
         } catch (\Throwable $th) {
-            throw new CustomUserMessageAuthenticationException('Invalid Token');
+            throw new CustomUserMessageAuthenticationException('Invalid token.');
         }
 
         return $user;
@@ -63,9 +62,11 @@ class JWTAuthenticator extends AbstractGuardAuthenticator
 
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception)
     {
-        $error = new Error(Response::HTTP_UNAUTHORIZED, $exception->getMessageKey());
+        $message = strtr($exception->getMessageKey(), $exception->getMessageData());
 
-        $view = View::create($error, $error->getStatus());
+        $response = new ErrorResponse(401, $message);
+
+        $view = View::create($response, $response->getStatus());
 
         return $this->viewHandler->handle($view);
     }
@@ -81,9 +82,9 @@ class JWTAuthenticator extends AbstractGuardAuthenticator
             ? strtr($authException->getMessageKey(), $authException->getMessageData())
             : 'Token not found.';
 
-        $error = new Error(Response::HTTP_UNAUTHORIZED, $message);
+        $response = new ErrorResponse(401, $message);
 
-        $view = View::create($error, $error->getStatus());
+        $view = View::create($response, $response->getStatus());
 
         return $this->viewHandler->handle($view);
     }

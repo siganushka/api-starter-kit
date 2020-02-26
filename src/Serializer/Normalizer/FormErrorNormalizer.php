@@ -2,21 +2,22 @@
 
 namespace App\Serializer\Normalizer;
 
-use App\Error\Error;
+use App\Response\ErrorResponse;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Serializer\NameConverter\NameConverterInterface;
 use Symfony\Component\Serializer\Normalizer\CacheableSupportsMethodInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
+use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 
 class FormErrorNormalizer implements NormalizerInterface, CacheableSupportsMethodInterface
 {
-    private $errorNormalizer;
+    private $normalizer;
     private $nameConverter;
 
-    public function __construct(ErrorNormalizer $errorNormalizer, NameConverterInterface $nameConverter)
+    public function __construct(ObjectNormalizer $normalizer, NameConverterInterface $nameConverter)
     {
-        $this->errorNormalizer = $errorNormalizer;
+        $this->normalizer = $normalizer;
         $this->nameConverter = $nameConverter;
     }
 
@@ -30,13 +31,12 @@ class FormErrorNormalizer implements NormalizerInterface, CacheableSupportsMetho
             }
         }
 
-        $status = Response::HTTP_UNPROCESSABLE_ENTITY;
-        $detail = Response::$statusTexts[$status];
+        $response = new ErrorResponse(Response::HTTP_UNPROCESSABLE_ENTITY, 'Validation Failed');
 
-        $error = new Error($status, $detail);
-        $error->setInvalidParams($invalidParams);
+        $data = $this->normalizer->normalize($response, $format, $context);
+        $data['invalid_params'] = $invalidParams;
 
-        return $this->errorNormalizer->normalize($error, $format, $context);
+        return $data;
     }
 
     public function supportsNormalization($data, $format = null): bool

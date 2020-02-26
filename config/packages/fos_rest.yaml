@@ -7,6 +7,7 @@ fos_rest:
         default_engine: null # deprecated warning
         force_redirects: [] # deprecated warning
         view_response_listener:  true
+        failed_validation: 422
     body_listener:
         array_normalizer:
             service: App\Serializer\Normalizer\SymfonyCamelKeysNormalizer

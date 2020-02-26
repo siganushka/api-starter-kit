@@ -2,12 +2,11 @@
 
 namespace App\Security\Authenticator;
 
-use App\Error\Error;
 use App\JWT\TokenManager;
+use App\Response\ErrorResponse;
 use FOS\RestBundle\View\View;
 use FOS\RestBundle\View\ViewHandlerInterface;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
@@ -80,9 +79,11 @@ class UsernamePasswordAuthenticator extends AbstractGuardAuthenticator
 
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception)
     {
-        $error = new Error(Response::HTTP_UNAUTHORIZED, $exception->getMessageKey());
+        $message = strtr($exception->getMessageKey(), $exception->getMessageData());
 
-        $view = View::create($error, $error->getStatus());
+        $response = new ErrorResponse(401, $message);
+
+        $view = View::create($response, $response->getStatus());
 
         return $this->viewHandler->handle($view);
     }
@@ -102,9 +103,9 @@ class UsernamePasswordAuthenticator extends AbstractGuardAuthenticator
             ? strtr($authException->getMessageKey(), $authException->getMessageData())
             : 'Login Required.';
 
-        $error = new Error(Response::HTTP_UNAUTHORIZED, $message);
+        $response = new ErrorResponse(401, $message);
 
-        $view = View::create($error, $error->getStatus());
+        $view = View::create($response, $response->getStatus());
 
         return $this->viewHandler->handle($view);
     }

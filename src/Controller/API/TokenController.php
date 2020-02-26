@@ -2,7 +2,6 @@
 
 namespace App\Controller\API;
 
-use FOS\RestBundle\Controller\AbstractFOSRestController;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
@@ -13,7 +12,7 @@ use Symfony\Component\Routing\Annotation\Route;
  * @apiSuccess (Success 200) {String} expires_in 访问令牌有效期，过期后需要客户端主动刷新
  * @apiSuccess (Success 200) {String} refresh_token 刷新令牌，需要客户端保存，有效期固定 1 个月
  */
-class TokenController extends AbstractFOSRestController
+class TokenController extends AbstractController
 {
     /**
      * @Route("/token", name="api_token", methods={"POST"})
