@@ -7,6 +7,12 @@ $ git clone https://github.com/siganushka/api-starter-kit.git
 $ cd ./api-starter-kit
 ```
 
+### 安装项目
+
+```bash
+$ composer install
+```
+
 ### 配置参数
 
 ```bash
@@ -14,12 +20,6 @@ $ composer dump-env {ENV} # ENV 为当前环境，可选为 dev, test, prod
 ```
 
 > 打开 ``.env.local.php`` 文件修改项目所需参数，比如数据库信息
-
-### 安装项目
-
-```bash
-$ composer install
-```
 
 ### 创建数据库
 
