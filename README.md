@@ -29,23 +29,8 @@ $ php bin/console doctrine:schema:update --force # 创建表结构
 $ php bin/console doctrine:fixtures:load # 生成测试数据（可选）
 ```
 
-### 前端依赖
-
-```bash
-$ yarn install # 安装前端依赖
-$ yarn encore production # 打包压缩前端依赖（javascript, css, img...）
-```
-
 ### 单元测试
 
 ```bash
 $ php bin/phpunit --debug # 执行单元测试
 ```
-
-### 生成接口文档
-
-```bash
-$ ./node_modules/.bin/apidoc -i ./src/Controller/ -o ./public/apidoc
-```
-
-> 打开  ``http://{HOST}/apidoc/index.html`` 查看接口文档

@@ -4,14 +4,13 @@ namespace App\Tests\JWT;
 
 use App\Entity\User;
 use App\JWT\RefreshTokenManager;
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use PHPUnit\Framework\TestCase;
 
-class RefreshTokenManagerTest extends WebTestCase
+class RefreshTokenManagerTest extends TestCase
 {
-    public function testRefreshTokenManager()
+    public function testAll()
     {
         $user = new User();
-        $user->setUsername('siganushka');
 
         $refreshTokenManager = $this->createMock(RefreshTokenManager::class);
 
@@ -34,7 +33,7 @@ class RefreshTokenManagerTest extends WebTestCase
         $this->assertTrue($ret);
     }
 
-    public function testRefreshTokenNotFound()
+    public function testRefreshTokenNotFoundException()
     {
         $this->expectException(\RuntimeException::class);
 

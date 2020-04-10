@@ -15,23 +15,25 @@ security:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
 
-        refresh_token:
-            pattern: ^/api/refresh_token
-            stateless: true
-            anonymous: lazy
-            guard:
-                authenticators:
-                    - App\Security\Authenticator\RefreshTokenAuthenticator
-
-        token:
+        api_token_post:
             pattern: ^/api/token
+            methods: POST
             stateless: true
             anonymous: lazy
             guard:
                 authenticators:
                     - App\Security\Authenticator\UsernamePasswordAuthenticator
 
-        main:
+        api_token_put:
+            pattern: ^/api/token
+            methods: PUT
+            stateless: true
+            anonymous: lazy
+            guard:
+                authenticators:
+                    - App\Security\Authenticator\RefreshTokenAuthenticator
+
+        api:
             pattern: ^/api
             stateless: true
             anonymous: lazy

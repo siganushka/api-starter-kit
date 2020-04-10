@@ -1,6 +1,6 @@
 <?php
 
-namespace App\TokenExtractor;
+namespace App\Security\Extractor;
 
 use Symfony\Component\HttpFoundation\Request;
 

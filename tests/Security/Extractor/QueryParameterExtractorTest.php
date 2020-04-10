@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Tests\TokenExtractor;
+namespace App\Tests\Security\Extractor;
 
-use App\TokenExtractor\QueryParameterExtractor;
+use App\Security\Extractor\QueryParameterExtractor;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\Request;
 
 class QueryParameterExtractorTest extends TestCase
 {
-    public function testExtractorToken()
+    public function testAll()
     {
         $extractor = new QueryParameterExtractor('foo');
 
@@ -22,6 +22,6 @@ class QueryParameterExtractorTest extends TestCase
     {
         $this->expectException(\InvalidArgumentException::class);
 
-        return new QueryParameterExtractor('');
+        new QueryParameterExtractor('');
     }
 }

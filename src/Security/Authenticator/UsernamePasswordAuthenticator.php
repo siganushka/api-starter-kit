@@ -2,8 +2,8 @@
 
 namespace App\Security\Authenticator;
 
+use App\Exception\APIException;
 use App\JWT\TokenManager;
-use App\Response\ErrorResponse;
 use FOS\RestBundle\View\View;
 use FOS\RestBundle\View\ViewHandlerInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -11,6 +11,7 @@ use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\Exception\CustomUserMessageAuthenticationException;
+use Symfony\Component\Security\Core\Exception\TokenNotFoundException;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 use Symfony\Component\Security\Guard\AbstractGuardAuthenticator;
@@ -34,7 +35,7 @@ class UsernamePasswordAuthenticator extends AbstractGuardAuthenticator
         $this->options = array_merge([
             'username_path' => 'username',
             'password_path' => 'password',
-            'check_path' => 'api_token',
+            'check_path' => 'api_token_post',
         ], $options);
     }
 
@@ -79,13 +80,7 @@ class UsernamePasswordAuthenticator extends AbstractGuardAuthenticator
 
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception)
     {
-        $message = strtr($exception->getMessageKey(), $exception->getMessageData());
-
-        $response = new ErrorResponse(401, $message);
-
-        $view = View::create($response, $response->getStatus());
-
-        return $this->viewHandler->handle($view);
+        throw new APIException(401, $exception->getMessageKey(), $exception->getMessageData(), 'security');
     }
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey)
@@ -99,15 +94,11 @@ class UsernamePasswordAuthenticator extends AbstractGuardAuthenticator
 
     public function start(Request $request, AuthenticationException $authException = null)
     {
-        $message = ($authException instanceof AuthenticationException)
-            ? strtr($authException->getMessageKey(), $authException->getMessageData())
-            : 'Login Required.';
+        if (!$authException instanceof AuthenticationException) {
+            $authException = new TokenNotFoundException();
+        }
 
-        $response = new ErrorResponse(401, $message);
-
-        $view = View::create($response, $response->getStatus());
-
-        return $this->viewHandler->handle($view);
+        throw new APIException(401, $authException->getMessageKey(), $authException->getMessageData(), 'security');
     }
 
     public function supportsRememberMe()

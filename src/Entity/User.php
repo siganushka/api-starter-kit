@@ -64,7 +64,7 @@ class User implements ResourceInterface, EnableInterface, TimestampableInterface
      *
      * @Groups({"user_refresh_token"})
      */
-    private $refreshTokenExpireAt;
+    private $refreshTokenExpiresAt;
 
     public function getUsername(): string
     {
@@ -114,25 +114,25 @@ class User implements ResourceInterface, EnableInterface, TimestampableInterface
         return $this;
     }
 
-    public function getRefreshTokenExpireAt(): ?\DateTimeInterface
+    public function getRefreshTokenExpiresAt(): ?\DateTimeInterface
     {
-        return $this->refreshTokenExpireAt;
+        return $this->refreshTokenExpiresAt;
     }
 
-    public function setRefreshTokenExpireAt(?\DateTimeInterface $refreshTokenExpireAt): self
+    public function setRefreshTokenExpiresAt(?\DateTimeInterface $refreshTokenExpiresAt): self
     {
-        $this->refreshTokenExpireAt = $refreshTokenExpireAt;
+        $this->refreshTokenExpiresAt = $refreshTokenExpiresAt;
 
         return $this;
     }
 
     public function isRefreshTokenExpired(): bool
     {
-        if (null === $this->refreshTokenExpireAt) {
+        if (null === $this->refreshTokenExpiresAt) {
             return true;
         }
 
-        return (new \DateTime()) > $this->refreshTokenExpireAt;
+        return (new \DateTime()) > $this->refreshTokenExpiresAt;
     }
 
     public function getRoles(): array

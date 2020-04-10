@@ -5,14 +5,13 @@ namespace App\Tests\JWT;
 use App\Entity\User;
 use App\JWT\Token;
 use App\JWT\TokenManager;
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use PHPUnit\Framework\TestCase;
 
-class TokenManagerTest extends WebTestCase
+class TokenManagerTest extends TestCase
 {
-    public function testTokenManager()
+    public function testAll()
     {
         $user = new User();
-        $user->setUsername('siganushka');
 
         $token = new Token();
         $token->setAccessToken('mock_access_token');

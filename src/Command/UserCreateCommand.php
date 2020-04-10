@@ -49,7 +49,7 @@ class UserCreateCommand extends Command
         $user->setUsername($username);
         $user->setPassword($password);
         $user->setAvatar('http://placehold.it/320x320');
-        $user->setCreatedAt(new \DateTimeImmutable());
+        $user->setEnabled(true);
 
         $errors = $this->validator->validate($user, null, ['username', 'password']);
         if (\count($errors) > 0) {

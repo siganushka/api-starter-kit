@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Tests\TokenExtractor;
+namespace App\Tests\Security\Extractor;
 
-use App\TokenExtractor\AuthorizationHeaderExtractor;
+use App\Security\Extractor\AuthorizationHeaderExtractor;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\Request;
 
 class AuthorizationHeaderExtractorTest extends TestCase
 {
-    public function testExtractorToken()
+    public function testAll()
     {
         $extractor = new AuthorizationHeaderExtractor('foo', 'Bearer');
         $extractorEmptyPrefix = new AuthorizationHeaderExtractor('bar', null);
@@ -31,6 +31,6 @@ class AuthorizationHeaderExtractorTest extends TestCase
     {
         $this->expectException(\InvalidArgumentException::class);
 
-        return new AuthorizationHeaderExtractor('');
+        new AuthorizationHeaderExtractor('');
     }
 }

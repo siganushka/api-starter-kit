@@ -1,16 +1,16 @@
 <?php
 
-namespace App\Tests\TokenExtractor;
+namespace App\Tests\Security\Extractor;
 
-use App\TokenExtractor\AuthorizationHeaderExtractor;
-use App\TokenExtractor\ChainExtractor;
-use App\TokenExtractor\QueryParameterExtractor;
+use App\Security\Extractor\AuthorizationHeaderExtractor;
+use App\Security\Extractor\ChainExtractor;
+use App\Security\Extractor\QueryParameterExtractor;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\Request;
 
 class ChainExtractorTest extends TestCase
 {
-    public function testChainExtractor()
+    public function testAll()
     {
         $extractor = new ChainExtractor();
         $extractor->addExtractor(new AuthorizationHeaderExtractor('foo', 'Bearer'));

@@ -18,7 +18,6 @@ class TokenManager
     public function create(RefreshTokenUserInterface $user): Token
     {
         $payload = [
-            // 'roles' => $user->getRoles(),
             'username' => $user->getUsername(),
         ];
 

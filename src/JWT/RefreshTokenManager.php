@@ -2,6 +2,7 @@
 
 namespace App\JWT;
 
+use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 
 class RefreshTokenManager
@@ -17,7 +18,7 @@ class RefreshTokenManager
 
     public function loadUserByRefreshToken(string $refreshToken): RefreshTokenUserInterface
     {
-        $user = $this->entityManager->getRepository('App\Entity\User')
+        $user = $this->entityManager->getRepository(User::class)
             ->findOneByRefreshToken($refreshToken);
 
         if (!$user) {
@@ -33,10 +34,10 @@ class RefreshTokenManager
         $refreshToken = str_replace(['+', '/'], ['-', '_'], base64_encode($refreshToken));
 
         $datetime = new \DateTime();
-        $expireAt = $datetime->modify(sprintf('+%d seconds', $this->ttl));
+        $expiresAt = $datetime->modify(sprintf('+%d seconds', $this->ttl));
 
         $user->setRefreshToken($refreshToken);
-        $user->setRefreshTokenExpireAt($expireAt);
+        $user->setRefreshTokenExpiresAt($expiresAt);
 
         $this->entityManager->flush();
 
@@ -46,7 +47,7 @@ class RefreshTokenManager
     public function destroy(RefreshTokenUserInterface $user): bool
     {
         $user->setRefreshToken(null);
-        $user->setRefreshTokenExpireAt(null);
+        $user->setRefreshTokenExpiresAt(null);
 
         $this->entityManager->flush();
 

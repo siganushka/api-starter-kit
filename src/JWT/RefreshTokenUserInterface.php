@@ -10,9 +10,9 @@ interface RefreshTokenUserInterface extends UserInterface
 
     public function setRefreshToken(?string $refreshToken): self;
 
-    public function getRefreshTokenExpireAt(): ?\DateTimeInterface;
+    public function getRefreshTokenExpiresAt(): ?\DateTimeInterface;
 
-    public function setRefreshTokenExpireAt(?\DateTimeInterface $refreshTokenExpireAt): self;
+    public function setRefreshTokenExpiresAt(?\DateTimeInterface $refreshTokenExpiresAt): self;
 
     public function isRefreshTokenExpired(): bool;
 }

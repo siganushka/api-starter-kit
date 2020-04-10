@@ -5,8 +5,8 @@
 # https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
     locale: zh_CN
-    access_token_ttl: 300
-    refresh_token_ttl: 3600
+    access_token_ttl: 3600
+    refresh_token_ttl: 86400
 
 services:
     # default configuration for services in *this* file
@@ -38,13 +38,16 @@ services:
     Symfony\Component\Serializer\Encoder\XmlEncoder:
         $defaultContext: { xml_root_node_name: xml, xml_encoding: UTF-8 }
 
-    App\TokenExtractor\ChainExtractor:
+    App\Translation\DecoratingTranslator:
+        decorates: Symfony\Contracts\Translation\TranslatorInterface
+
+    App\Security\Extractor\ChainExtractor:
         calls:
-            - ['addExtractor', ['@App\TokenExtractor\AuthorizationHeaderExtractor']]
-            - ['addExtractor', ['@App\TokenExtractor\QueryParameterExtractor']]
+            - ['addExtractor', ['@App\Security\Extractor\AuthorizationHeaderExtractor']]
+            - ['addExtractor', ['@App\Security\Extractor\QueryParameterExtractor']]
 
     App\Security\Authenticator\JWTAuthenticator:
-        $tokenExtractor: '@App\TokenExtractor\ChainExtractor'
+        $tokenExtractor: '@App\Security\Extractor\ChainExtractor'
 
     App\JWT\JWTManager:
         $secret: '%env(resolve:APP_SECRET)%'

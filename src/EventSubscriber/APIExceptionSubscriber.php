@@ -1,15 +1,14 @@
 <?php
 
-namespace App\EventListener;
+namespace App\EventSubscriber;
 
-use App\Response\ErrorResponse;
+use App\Exception\APIException;
 use FOS\RestBundle\View\View;
 use FOS\RestBundle\View\ViewHandlerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\HttpKernel\Event\ViewEvent;
-use Symfony\Component\HttpKernel\KernelEvents;
+use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 
-class ErrorResponseListener implements EventSubscriberInterface
+class APIExceptionSubscriber implements EventSubscriberInterface
 {
     private $viewHandler;
 
@@ -20,17 +19,17 @@ class ErrorResponseListener implements EventSubscriberInterface
 
     public static function getSubscribedEvents()
     {
-        return [KernelEvents::VIEW => 'onKernelView'];
+        return [ExceptionEvent::class => 'onExceptionEvent'];
     }
 
-    public function onKernelView(ViewEvent $event)
+    public function onExceptionEvent(ExceptionEvent $event)
     {
-        $result = $event->getControllerResult();
-        if (!$result instanceof ErrorResponse) {
+        $exception = $event->getThrowable();
+        if (!$exception instanceof APIException) {
             return;
         }
 
-        $view = View::create($result, $result->getStatus());
+        $view = View::create($exception, $exception->getStatusCode());
         $response = $this->viewHandler->handle($view);
 
         $event->setResponse($response);

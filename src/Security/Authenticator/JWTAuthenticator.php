@@ -2,28 +2,27 @@
 
 namespace App\Security\Authenticator;
 
+use App\Exception\APIException;
+use App\JWT\Exception\JWTExpiredException;
 use App\JWT\JWTManager;
-use App\Response\ErrorResponse;
-use App\TokenExtractor\TokenExtractorInterface;
-use FOS\RestBundle\View\View;
-use FOS\RestBundle\View\ViewHandlerInterface;
+use App\Security\Extractor\TokenExtractorInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
-use Symfony\Component\Security\Core\Exception\CustomUserMessageAuthenticationException;
+use Symfony\Component\Security\Core\Exception\BadCredentialsException;
+use Symfony\Component\Security\Core\Exception\CredentialsExpiredException;
+use Symfony\Component\Security\Core\Exception\TokenNotFoundException;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 use Symfony\Component\Security\Guard\AbstractGuardAuthenticator;
 
 class JWTAuthenticator extends AbstractGuardAuthenticator
 {
-    private $viewHandler;
     private $tokenExtractor;
     private $jwtManager;
 
-    public function __construct(ViewHandlerInterface $viewHandler, TokenExtractorInterface $tokenExtractor, JWTManager $jwtManager)
+    public function __construct(TokenExtractorInterface $tokenExtractor, JWTManager $jwtManager)
     {
-        $this->viewHandler = $viewHandler;
         $this->tokenExtractor = $tokenExtractor;
         $this->jwtManager = $jwtManager;
     }
@@ -42,17 +41,13 @@ class JWTAuthenticator extends AbstractGuardAuthenticator
     {
         try {
             $jwt = $this->jwtManager->parse($credentials);
+        } catch (JWTExpiredException $th) {
+            throw new CredentialsExpiredException();
         } catch (\Throwable $th) {
-            throw new CustomUserMessageAuthenticationException('Invalid token.');
+            throw new BadCredentialsException();
         }
 
-        try {
-            $user = $userProvider->loadUserByUsername($jwt->getClaim('username'));
-        } catch (\Throwable $th) {
-            throw new CustomUserMessageAuthenticationException('Invalid token.');
-        }
-
-        return $user;
+        return $userProvider->loadUserByUsername($jwt->getClaim('username'));
     }
 
     public function checkCredentials($credentials, UserInterface $user)
@@ -62,13 +57,7 @@ class JWTAuthenticator extends AbstractGuardAuthenticator
 
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception)
     {
-        $message = strtr($exception->getMessageKey(), $exception->getMessageData());
-
-        $response = new ErrorResponse(401, $message);
-
-        $view = View::create($response, $response->getStatus());
-
-        return $this->viewHandler->handle($view);
+        throw new APIException(401, $exception->getMessageKey(), $exception->getMessageData(), 'security');
     }
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey)
@@ -78,15 +67,11 @@ class JWTAuthenticator extends AbstractGuardAuthenticator
 
     public function start(Request $request, AuthenticationException $authException = null)
     {
-        $message = ($authException instanceof AuthenticationException)
-            ? strtr($authException->getMessageKey(), $authException->getMessageData())
-            : 'Token not found.';
+        if (!$authException instanceof AuthenticationException) {
+            $authException = new TokenNotFoundException();
+        }
 
-        $response = new ErrorResponse(401, $message);
-
-        $view = View::create($response, $response->getStatus());
-
-        return $this->viewHandler->handle($view);
+        throw new APIException(401, $authException->getMessageKey(), $authException->getMessageData(), 'security');
     }
 
     public function supportsRememberMe()
