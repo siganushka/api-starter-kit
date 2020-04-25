@@ -1050,12 +1050,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/FriendsOfSymfony/FOSRestBundle.git",
-                "reference": "fb3acbca0c02201206a267ed5baf8c722f7d3ba6"
+                "reference": "e605fce31c92ea5aa0f9473649d356c05d9637cf"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/FriendsOfSymfony/FOSRestBundle/zipball/fb3acbca0c02201206a267ed5baf8c722f7d3ba6",
-                "reference": "fb3acbca0c02201206a267ed5baf8c722f7d3ba6",
+                "url": "https://api.github.com/repos/FriendsOfSymfony/FOSRestBundle/zipball/e605fce31c92ea5aa0f9473649d356c05d9637cf",
+                "reference": "e605fce31c92ea5aa0f9473649d356c05d9637cf",
                 "shasum": ""
             },
             "require": {
@@ -1105,7 +1105,6 @@
             "suggest": {
                 "jms/serializer-bundle": "Add support for advanced serialization capabilities, recommended, requires ^2.0|^3.0",
                 "sensio/framework-extra-bundle": "Add support for the request body converter and the view response listener, requires ^3.0",
-                "symfony/expression-language": "Add support for using the expression language in the routing, requires ^2.7|^3.0",
                 "symfony/serializer": "Add support for basic serialization capabilities and xml decoding, requires ^2.7|^3.0",
                 "symfony/validator": "Add support for validation capabilities in the ParamFetcher, requires ^2.7|^3.0"
             },
@@ -1147,7 +1146,7 @@
             "keywords": [
                 "rest"
             ],
-            "time": "2020-04-18T12:54:52+00:00"
+            "time": "2020-04-24T11:55:40+00:00"
         },
         {
             "name": "jdorn/sql-formatter",
@@ -1590,12 +1589,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/siganushka/generic-bundle.git",
-                "reference": "4539653b05c41b02ed7b57871fc5cc14179befd0"
+                "reference": "a7c0d9bdf88fa9e419d60a42ba36df0c66296516"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/siganushka/generic-bundle/zipball/4539653b05c41b02ed7b57871fc5cc14179befd0",
-                "reference": "4539653b05c41b02ed7b57871fc5cc14179befd0",
+                "url": "https://api.github.com/repos/siganushka/generic-bundle/zipball/a7c0d9bdf88fa9e419d60a42ba36df0c66296516",
+                "reference": "a7c0d9bdf88fa9e419d60a42ba36df0c66296516",
                 "shasum": ""
             },
             "require": {
@@ -1605,6 +1604,7 @@
                 "symfony/validator": "^3.4|^4.0|^5.0"
             },
             "require-dev": {
+                "composer/semver": "^2.0",
                 "symfony/phpunit-bridge": "^3.4|^4.0|^5.0"
             },
             "type": "symfony-bundle",
@@ -1629,7 +1629,7 @@
                 }
             ],
             "description": "Generic bundle for symfony.",
-            "time": "2020-04-23T12:31:34+00:00"
+            "time": "2020-04-25T10:15:22+00:00"
         },
         {
             "name": "symfony/cache",
