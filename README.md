@@ -29,13 +29,6 @@ $ php bin/console doctrine:schema:update --force    # 创建表结构
 $ php bin/console doctrine:fixtures:load            # 生成测试数据（可选）
 ```
 
-### 前端依赖
-
-```bash
-$ yarn install  # 安装前端依赖
-$ yarn build    # 打包压缩前端依赖（javascript, css, img...）
-```
-
 ### 单元测试
 
 ```bash
