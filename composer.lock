@@ -1611,12 +1611,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/siganushka/generic-bundle.git",
-                "reference": "a7c0d9bdf88fa9e419d60a42ba36df0c66296516"
+                "reference": "a504f2e25af60be5b445641a6cb4809cc595842a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/siganushka/generic-bundle/zipball/a7c0d9bdf88fa9e419d60a42ba36df0c66296516",
-                "reference": "a7c0d9bdf88fa9e419d60a42ba36df0c66296516",
+                "url": "https://api.github.com/repos/siganushka/generic-bundle/zipball/a504f2e25af60be5b445641a6cb4809cc595842a",
+                "reference": "a504f2e25af60be5b445641a6cb4809cc595842a",
                 "shasum": ""
             },
             "require": {
@@ -1651,7 +1651,7 @@
                 }
             ],
             "description": "Generic bundle for symfony.",
-            "time": "2020-04-25T10:15:22+00:00"
+            "time": "2020-05-13T10:10:30+00:00"
         },
         {
             "name": "symfony/cache",

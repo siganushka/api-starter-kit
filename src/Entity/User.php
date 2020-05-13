@@ -46,13 +46,6 @@ class User implements ResourceInterface, EnableInterface, TimestampableInterface
     private $password;
 
     /**
-     * @ORM\Column(type="string")
-     *
-     * @Groups({"user"})
-     */
-    private $avatar;
-
-    /**
      * @ORM\Column(type="string", nullable=true, unique=true)
      *
      * @Groups({"user_refresh_token"})
@@ -86,18 +79,6 @@ class User implements ResourceInterface, EnableInterface, TimestampableInterface
     public function setPassword(string $password): self
     {
         $this->password = $password;
-
-        return $this;
-    }
-
-    public function getAvatar(): ?string
-    {
-        return $this->avatar;
-    }
-
-    public function setAvatar(string $avatar): self
-    {
-        $this->avatar = $avatar;
 
         return $this;
     }

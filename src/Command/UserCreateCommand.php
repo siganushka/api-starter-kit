@@ -48,7 +48,6 @@ class UserCreateCommand extends Command
         $user = new User();
         $user->setUsername($username);
         $user->setPassword($password);
-        $user->setAvatar('http://placehold.it/320x320');
         $user->setEnabled(true);
 
         $violations = $this->validator->validate($user, null, ['username', 'password']);

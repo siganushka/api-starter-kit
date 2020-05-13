@@ -20,7 +20,6 @@ class UserFixture extends Fixture
     {
         $user = new User();
         $user->setUsername('siganushka');
-        $user->setAvatar('http://placehold.it/320x320');
         $user->setEnabled(true);
 
         $password = $this->passwordEncoder->encodePassword($user, '123456');
