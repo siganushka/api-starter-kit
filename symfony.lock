@@ -141,9 +141,6 @@
             "config/bootstrap.php"
         ]
     },
-    "symfony/debug": {
-        "version": "v4.4.4"
-    },
     "symfony/dependency-injection": {
         "version": "v5.0.4"
     },

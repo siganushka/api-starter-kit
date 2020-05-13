@@ -51,9 +51,9 @@ class UserCreateCommand extends Command
         $user->setAvatar('http://placehold.it/320x320');
         $user->setEnabled(true);
 
-        $errors = $this->validator->validate($user, null, ['username', 'password']);
-        if (\count($errors) > 0) {
-            $io->error(sprintf('%s: %s', $errors[0]->getPropertyPath(), $errors[0]->getMessage()));
+        $violations = $this->validator->validate($user, null, ['username', 'password']);
+        if (\count($violations) > 0) {
+            $io->error(sprintf('%s: %s', $violations[0]->getPropertyPath(), $violations[0]->getMessage()));
 
             return 1;
         }
