@@ -1075,16 +1075,15 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/FriendsOfSymfony/FOSRestBundle.git",
-                "reference": "7853528d0e855277e55ee01f65cd6e8c70ba72a6"
+                "reference": "ec65a37d4ae87040786f6c046dedc5a5c494278f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/FriendsOfSymfony/FOSRestBundle/zipball/7853528d0e855277e55ee01f65cd6e8c70ba72a6",
-                "reference": "7853528d0e855277e55ee01f65cd6e8c70ba72a6",
+                "url": "https://api.github.com/repos/FriendsOfSymfony/FOSRestBundle/zipball/ec65a37d4ae87040786f6c046dedc5a5c494278f",
+                "reference": "ec65a37d4ae87040786f6c046dedc5a5c494278f",
                 "shasum": ""
             },
             "require": {
-                "doctrine/inflector": "^1.0",
                 "php": "^7.2",
                 "psr/log": "^1.0",
                 "symfony/config": "^4.4|^5.0",
@@ -1168,7 +1167,7 @@
             "keywords": [
                 "rest"
             ],
-            "time": "2020-05-13T08:51:48+00:00"
+            "time": "2020-05-13T16:17:22+00:00"
         },
         {
             "name": "jdorn/sql-formatter",
@@ -1611,12 +1610,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/siganushka/generic-bundle.git",
-                "reference": "a504f2e25af60be5b445641a6cb4809cc595842a"
+                "reference": "98bec7f8f1c6724fbc40113e0092f9d218c1aea3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/siganushka/generic-bundle/zipball/a504f2e25af60be5b445641a6cb4809cc595842a",
-                "reference": "a504f2e25af60be5b445641a6cb4809cc595842a",
+                "url": "https://api.github.com/repos/siganushka/generic-bundle/zipball/98bec7f8f1c6724fbc40113e0092f9d218c1aea3",
+                "reference": "98bec7f8f1c6724fbc40113e0092f9d218c1aea3",
                 "shasum": ""
             },
             "require": {
@@ -1651,7 +1650,7 @@
                 }
             ],
             "description": "Generic bundle for symfony.",
-            "time": "2020-05-13T10:10:30+00:00"
+            "time": "2020-05-14T11:08:54+00:00"
         },
         {
             "name": "symfony/cache",
