@@ -47,7 +47,12 @@ class JWTAuthenticator extends AbstractGuardAuthenticator
             throw new BadCredentialsException();
         }
 
-        return $userProvider->loadUserByUsername($jwt->getClaim('username'));
+        $dataSet = $jwt->claims();
+        if (!$dataSet->has('username')) {
+            throw new BadCredentialsException();
+        }
+
+        return $userProvider->loadUserByUsername($dataSet->get('username'));
     }
 
     public function checkCredentials($credentials, UserInterface $user)

@@ -19,7 +19,8 @@ security:
             pattern: ^/api/token
             methods: POST
             stateless: true
-            anonymous: lazy
+            anonymous: true
+            lazy: true
             guard:
                 authenticators:
                     - App\Security\Authenticator\UsernamePasswordAuthenticator
@@ -28,7 +29,8 @@ security:
             pattern: ^/api/token
             methods: PUT
             stateless: true
-            anonymous: lazy
+            anonymous: true
+            lazy: true
             guard:
                 authenticators:
                     - App\Security\Authenticator\RefreshTokenAuthenticator
@@ -36,7 +38,8 @@ security:
         api:
             pattern: ^/api
             stateless: true
-            anonymous: lazy
+            anonymous: true
+            lazy: true
             guard:
                 authenticators:
                     - App\Security\Authenticator\JWTAuthenticator

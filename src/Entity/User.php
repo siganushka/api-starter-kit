@@ -4,12 +4,12 @@ namespace App\Entity;
 
 use App\JWT\RefreshTokenUserInterface;
 use Doctrine\ORM\Mapping as ORM;
-use Siganushka\GenericBundle\Model\EnableInterface;
-use Siganushka\GenericBundle\Model\EnableTrait;
-use Siganushka\GenericBundle\Model\ResourceInterface;
-use Siganushka\GenericBundle\Model\ResourceTrait;
-use Siganushka\GenericBundle\Model\TimestampableInterface;
-use Siganushka\GenericBundle\Model\TimestampableTrait;
+use Siganushka\GenericBundle\Entity\EnableInterface;
+use Siganushka\GenericBundle\Entity\EnableTrait;
+use Siganushka\GenericBundle\Entity\ResourceInterface;
+use Siganushka\GenericBundle\Entity\ResourceTrait;
+use Siganushka\GenericBundle\Entity\TimestampableInterface;
+use Siganushka\GenericBundle\Entity\TimestampableTrait;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;

@@ -22,10 +22,11 @@ class JWTManagerTest extends TestCase
 
         $jwt = $jwtManager->create($payload, $headers);
         $this->assertInstanceOf(Token::class, $jwt);
-        $this->assertEquals(2, substr_count($jwt, '.'));
+        $this->assertEquals(2, substr_count($jwt->toString(), '.'));
 
-        $token = $jwtManager->parse($jwt);
-        $this->assertEquals($payload['email'], $token->getClaim('email'));
-        $this->assertEquals($headers['ext'], $token->getHeader('ext'));
+        $jws = $jwtManager->parse($jwt->toString());
+
+        $this->assertEquals($headers['ext'], $jws->headers()->get('ext'));
+        $this->assertEquals($payload['email'], $jws->claims()->get('email'));
     }
 }

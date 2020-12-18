@@ -2,10 +2,15 @@
 
 namespace App\JWT;
 
-use Lcobucci\JWT\Builder;
-use Lcobucci\JWT\Parser;
+use Lcobucci\JWT\Encoding\JoseEncoder;
+use Lcobucci\JWT\Encoding\MicrosecondBasedDateConversion;
 use Lcobucci\JWT\Signer\Hmac\Sha256;
+use Lcobucci\JWT\Signer\Key\InMemory;
 use Lcobucci\JWT\Token;
+use Lcobucci\JWT\Token\Builder;
+use Lcobucci\JWT\Token\Parser;
+use Lcobucci\JWT\Validation\Constraint\SignedWith;
+use Lcobucci\JWT\Validation\Validator;
 
 class JWTManager
 {
@@ -22,43 +27,38 @@ class JWTManager
 
     public function create(array $payload, array $header = []): Token
     {
-        $expiresAt = new \DateTime();
-        $expiresAt->modify(sprintf('+%d seconds', $this->ttl));
+        $issuedAt = new \DateTimeImmutable();
+        $expiresAt = $issuedAt->modify(sprintf('+%d seconds', $this->ttl));
 
-        $builder = new Builder();
-        $builder->issuedAt(time());
-        $builder->expiresAt($expiresAt->getTimestamp());
+        $jws = new Builder(new JoseEncoder(), new MicrosecondBasedDateConversion());
+        $jws->issuedAt($issuedAt);
+        $jws->expiresAt($expiresAt);
 
         foreach ($payload as $key => $value) {
-            $builder->withClaim($key, $value);
+            $jws->withClaim($key, $value);
         }
 
         foreach ($header as $key => $value) {
-            $builder->withHeader($key, $value);
+            $jws->withHeader($key, $value);
         }
 
-        try {
-            $builder->sign($this->signer, $this->secret);
-        } catch (\Throwable $th) {
-            throw $th;
-        }
-
-        return $builder->getToken();
+        return $jws->getToken($this->signer, InMemory::plainText($this->secret));
     }
 
     public function parse(string $jwt): Token
     {
-        $token = (new Parser())->parse($jwt);
+        $jws = (new Parser(new JoseEncoder()))->parse((string) $jwt);
 
-        $isValid = $token->verify($this->signer, $this->secret);
+        $isValid = (new Validator())->validate($jws, new SignedWith($this->signer, InMemory::plainText($this->secret)));
         if (!$isValid) {
             throw new Exception\JWTInvalidException($jwt);
         }
 
-        if ($token->isExpired()) {
+        $now = new \DateTime();
+        if ($jws->isExpired($now)) {
             throw new Exception\JWTExpiredException($jwt);
         }
 
-        return $token;
+        return $jws;
     }
 }

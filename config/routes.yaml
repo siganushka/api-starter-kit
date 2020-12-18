@@ -1,3 +1,4 @@
-#index:
-#    path: /
-#    controller: App\Controller\DefaultController::index
+API:
+    resource: ../src/Controller/API
+    prefix: /api
+    type: annotation

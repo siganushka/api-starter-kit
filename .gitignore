@@ -14,8 +14,3 @@
 .phpunit.result.cache
 /phpunit.xml
 ###< symfony/phpunit-bridge ###
-
-###> app ###
-/node_modules
-/public/apidoc
-###< app ###

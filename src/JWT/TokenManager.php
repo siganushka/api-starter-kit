@@ -25,7 +25,7 @@ class TokenManager
         $jwt = $this->jwtManager->create($payload);
 
         $token = new Token();
-        $token->setAccessToken($jwt);
+        $token->setAccessToken($jwt->toString());
         $token->setRefreshToken($refreshToken);
         $token->setExpiresIn($this->ttl);
 

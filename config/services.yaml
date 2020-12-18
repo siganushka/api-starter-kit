@@ -17,26 +17,21 @@ services:
     # makes classes in src/ available to be used as services
     # this creates a service per class whose id is the fully-qualified class name
     App\:
-        resource: '../src/*'
-        exclude: '../src/{DependencyInjection,Entity,Migrations,Tests,Kernel.php}'
+        resource: '../src/'
+        exclude:
+            - '../src/DependencyInjection/'
+            - '../src/Entity/'
+            - '../src/Kernel.php'
+            - '../src/Tests/'
 
     # controllers are imported separately to make sure services can be injected
     # as action arguments even if you don't extend any base controller class
     App\Controller\:
-        resource: '../src/Controller'
+        resource: '../src/Controller/'
         tags: ['controller.service_arguments']
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
-
-    Symfony\Component\Serializer\Normalizer\DateTimeNormalizer:
-        $defaultContext: { datetime_format: 'Y/m/d H:i:s' }
-
-    Symfony\Component\Serializer\Encoder\JsonEncode:
-        $defaultContext: { json_encode_options: !php/const JSON_UNESCAPED_UNICODE }
-
-    Symfony\Component\Serializer\Encoder\XmlEncoder:
-        $defaultContext: { xml_root_node_name: xml, xml_encoding: UTF-8 }
 
     App\Translation\DecoratingTranslator:
         decorates: Symfony\Contracts\Translation\TranslatorInterface

@@ -1,2 +1,2 @@
 siganushka_generic:
-    table_prefix: tb_
+    table_prefix: app_
