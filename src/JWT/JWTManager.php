@@ -47,6 +47,10 @@ class JWTManager
 
     public function parse(string $jwt): Token
     {
+        if (!preg_match('/^[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+\.[A-Za-z0-9-_]*$/', $jwt)) {
+            throw new Exception\JWTInvalidException($jwt);
+        }
+
         $jws = (new Parser(new JoseEncoder()))->parse((string) $jwt);
 
         $isValid = (new Validator())->validate($jws, new SignedWith($this->signer, InMemory::plainText($this->secret)));
